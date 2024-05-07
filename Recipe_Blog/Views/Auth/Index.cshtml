@@ -1,0 +1,91 @@
+﻿@model UserViewModel
+@{
+	Layout = "~/Views/Shared/_AuthLayout.cshtml";
+}
+
+<div class="card card-authentication1 mx-auto my-4">
+	<div class="card-body">
+		<div class="card-content p-2">
+			<div class="text-center">
+				<img src="~/admin/images/logo-icon.png" alt="logo icon">
+			</div>
+			<div class="card-title text-uppercase text-center py-3">REGISTER</div>
+			<form asp-action="Register" method="POST" enctype="multipart/form-data">
+				<div class="form-group">
+					<label asp-for="Firstname" class="sr-only"></label>
+					<div class="position-relative has-icon-right">
+						<input type="text" asp-for="Firstname" class="form-control input-shadow" placeholder="Enter Your Fisrt Name">
+						<div class="form-control-position">
+							<i class="icon-user"></i>
+						</div>
+					</div>
+					<span asp-validation-for="Firstname" class="text-danger"></span>
+				</div>
+				<div class="form-group">
+					<label asp-for="Lastname" class="sr-only"></label>
+					<div class="position-relative has-icon-right">
+						<input type="text" asp-for="Lastname" class="form-control input-shadow" placeholder="Enter Your Last Name">
+						<div class="form-control-position">
+							<i class="icon-user"></i>
+						</div>
+					</div>
+					<span asp-validation-for="Lastname" class="text-danger"></span>
+				</div>
+				<div class="form-group">
+					<label asp-for="UserName" class="sr-only"></label>
+					<div class="position-relative has-icon-right">
+						<input type="text" asp-for="UserName" class="form-control input-shadow" placeholder="Enter Your UserName">
+						<div class="form-control-position">
+							<i class="icon-user"></i>
+						</div>
+					</div>
+					<span asp-validation-for="UserName" class="text-danger"></span>
+				</div>
+				<div class="form-group">
+					<label asp-for="Email" class="sr-only"></label>
+					<div class="position-relative has-icon-right">
+						<input type="text" asp-for="Email" class="form-control input-shadow" placeholder="Enter Your Email">
+						<div class="form-control-position">
+							<i class="icon-envelope-open"></i>
+						</div>
+					</div>
+					<span asp-validation-for="Email" class="text-danger"></span>
+				</div>
+				<div class="form-group">
+					<label asp-for="Password" class="sr-only"></label>
+					<div class="position-relative has-icon-right">
+						<input type="password" asp-for="Password" class="form-control input-shadow" placeholder="Choose Password">
+						<div class="form-control-position">
+							<i class="icon-lock"></i>
+						</div>
+					</div>
+					<span asp-validation-for="Password" class="text-danger"></span>
+				</div>
+
+				<div class="form-group">
+					<div class="icheck-material-white">
+						<input type="checkbox" id="user-checkbox" checked="" />
+						<label for="user-checkbox">I Agree With Terms & Conditions</label>
+					</div>
+				</div>
+
+				<button type="submit" as name="Roleid" value="3" class="btn btn-light btn-block waves-effect waves-light">REGISTER AS USER</button>
+
+				<button type="submit" name="Roleid" value="2" class="btn btn-light btn-block waves-effect waves-light">REGISTER AS CHEF</button>
+				@* <div class="text-center mt-3">Register With</div>
+
+
+				<div class="form-row mt-4">
+
+					<div class="form-group mb-0 col-12 text-right">
+						<button type="button" class="btn btn-light btn-block"><i class="zmdi zmdi-google"></i> Google</button>
+					</div>
+				</div> *@
+
+			</form>
+		</div>
+	</div>
+	<div class="card-footer text-center py-3">
+		<p class="text-warning mb-0">Already have an account? <a asp-action="login"> Login here</a></p>
+	</div>
+</div>
