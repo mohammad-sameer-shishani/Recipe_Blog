@@ -1,13 +1,15 @@
-﻿@model IEnumerable<Recipe>
+﻿@model IEnumerable<Recipe_Blog.Models.Recipe>
 
 @{
-    ViewData["Title"] = "Index";
+    ViewData["Title"] = "MyRecipes";
     Layout = "~/Views/Shared/_ChefLayout.cshtml";
 }
 
-<h1>All Recipes</h1>
+<h1>MyRecipes</h1>
 
-
+<p>
+    <a asp-action="Create">Add Recipe</a>
+</p>
 <table class="table">
     <thead>
         <tr>
@@ -23,21 +25,22 @@
             <th>
                 @Html.DisplayNameFor(model => model.Description)
             </th>
-            
+
             <th>
                 @Html.DisplayNameFor(model => model.Price)
             </th>
-       
+
             <th>
                 @Html.DisplayNameFor(model => model.Creationdate)
             </th>
-         
-            
+
+
             <th></th>
         </tr>
     </thead>
     <tbody>
-@foreach (var item in Model) {
+        @foreach (var item in Model)
+        {
             <tr>
                 <td>
                     @Html.DisplayFor(modelItem => item.User.Firstname)
@@ -51,17 +54,18 @@
                 <td>
                     @Html.DisplayFor(modelItem => item.Description)
                 </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Price)
+                </td>
+
+                <td>
+                    @Html.DisplayFor(modelItem => item.Creationdate)
+                </td>
+
             <td>
-                @Html.DisplayFor(modelItem => item.Price)
-            </td>
-            
-            <td>
-                @Html.DisplayFor(modelItem => item.Creationdate)
-            </td>
-            
-            
-            <td>
-                <a asp-action="AllDetails" asp-route-id="@item.Id">Details</a>
+                <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
+                <a asp-action="MyDetails" asp-route-id="@item.Id">Details</a> |
+                <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
             </td>
         </tr>
 }

@@ -20,23 +20,35 @@ namespace Recipe_Blog.Controllers
             
         }
         public void GetChefLoginInfo(){
-            var id = HttpContext.Session.GetInt32("chefSession");
-            var chef = _context.Users
+            var _id = HttpContext.Session.GetInt32("chefSession");
+            var _chef = _context.Users
                        .Include(u => u.Logins)
-                       .SingleOrDefault(x => x.Id == id);
-            ViewBag.thisChef = chef;
-            ViewBag.thisChefLogin = _context.Logins.SingleOrDefault(x => x.UserId == id);
+                       .SingleOrDefault(x => x.Id == _id);
+            ViewBag.thisChef = _chef;
+            ViewBag.thisChefLogin = _context.Logins.SingleOrDefault(x => x.UserId == _id);
         }
         // GET: ChefRecipes
         public async Task<IActionResult> Index()
         {
             GetChefLoginInfo();
-            var modelContext = _context.Recipes.Include(r => r.Category).Include(r => r.User);
+            var modelContext = _context.Recipes.Include(r => r.Category).Include(r => r.User).OrderBy(x => x.Creationdate);
+            return View(await modelContext.ToListAsync());
+        }
+        //GET: ChefRecipes 
+        public async Task<IActionResult> MyRecipes()
+        {
+            GetChefLoginInfo();
+            var myid = HttpContext.Session.GetInt32("chefSession");
+            var modelContext = _context.Recipes
+                .Include(r => r.Category)
+                .Include(r => r.User)
+                .Where(x => x.UserId == myid)
+                .OrderBy(x => x.Creationdate);
             return View(await modelContext.ToListAsync());
         }
 
         // GET: ChefRecipes/Details/5
-        public async Task<IActionResult> Details(decimal? id)
+        public async Task<IActionResult> AllDetails(decimal? id)
         {
             if (id == null || _context.Recipes == null)
             {
@@ -51,7 +63,26 @@ namespace Recipe_Blog.Controllers
             {
                 return NotFound();
             }
+            GetChefLoginInfo();
+            return View(recipe);
+        }
+        // GET: ChefRecipes/MyRecipeDetails/5
+        public async Task<IActionResult> MyDetails(decimal? id)
+        {
+            if (id == null || _context.Recipes == null)
+            {
+                return NotFound();
+            }
 
+            var recipe = await _context.Recipes
+                .Include(r => r.Category)
+                .Include(r => r.User)
+                .FirstOrDefaultAsync(m => m.Id == id);
+            if (recipe == null)
+            {
+                return NotFound();
+            }
+            GetChefLoginInfo();
             return View(recipe);
         }
 
@@ -71,10 +102,11 @@ namespace Recipe_Blog.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("Id,Price,Description,Creationdate,Name,UserId,CategoryId")] Recipe recipe)
         {
-            var _id = Convert.ToDecimal(HttpContext.Session.GetInt32("chefSession"));
+            
 
             if (ModelState.IsValid)
             {
+                var _id = Convert.ToDecimal(HttpContext.Session.GetInt32("chefSession"));
                 recipe.UserId = _id;
                 _context.Add(recipe);
                 await _context.SaveChangesAsync();

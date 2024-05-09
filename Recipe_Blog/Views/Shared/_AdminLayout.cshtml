@@ -45,8 +45,13 @@
             <ul class="sidebar-menu do-nicescrol">
                 <li class="sidebar-header">MAIN NAVIGATION</li>
                 <li>
-                    <a href="index">
+                    <a asp-action="index">
                         <i class="zmdi zmdi-view-dashboard"></i> <span>Dashboard</span>
+                    </a>
+                </li>
+                <li>
+                    <a asp-action="Profile">
+                        <i class="zmdi zmdi-face"></i> <span>Profile</span>
                     </a>
                 </li>
                 <li class="nav-item">
@@ -60,41 +65,48 @@
                             <span><h6 class="mx-3 collapse-header">Login Screens:</h6></span>
                             <span><a class="mx-5 collapse-item" asp-action="login">Login</a></span><br />
                             <span><a class="mx-5 collapse-item" asp-action="register">Register</a></span><br />
-                            <span><a class="mx-5 collapse-item" asp-action="forgotpassword">Forgot Password</a></span>
-                          
+                            <span><a class="mx-5 collapse-item" asp-action="forgotpassword">Forgot Password</a></span><br />
+                            <span><a class="mx-5 collapse-item" asp-action="">Home</a></span><br />
+                            <span><a class="mx-5 collapse-item" asp-action="">Testimonials</a></span><br />
+                            <span><a class="mx-5 collapse-item" asp-action="">About Us</a></span><br />
+                            <span><a class="mx-5 collapse-item" asp-action="">Contact Us</a></span><br />
                         </div>
                     </div>
                 </li>
-                @* <li>
-                    <a href="icons">
-                        <i class="zmdi zmdi-invert-colors"></i> <span>UI Icons</span>
-                    </a>
-                </li> *@
+               
 
                 <li>
-                    <a href="forms">
-                        <i class="zmdi zmdi-format-list-bulleted"></i> <span>Forms</span>
+                    <a asp-action="RegisteredUsers">
+                        <i class="zmdi zmdi-account-circle"></i> <span>Registered Users</span>
+                    </a>
+                </li>
+                <li>
+                    <a asp-action="RegisteredChefs">
+                        <i class="zmdi zmdi-account-circle"></i> <span>Registered Chefs</span>
+                    </a>
+                </li>
+                <li>
+                    <a asp-action="">
+                        <i class="zmdi zmdi-format-list-bulleted"></i> <span>Recipes</span>
+                    </a>
+                </li>
+                <li>
+                    <a asp-action="">
+                        <i class="zmdi zmdi-format-list-bulleted"></i> <span>Categories</span>
+                    </a>
+                </li>
+                <li>
+                    <a asp-action="">
+                        <i class="zmdi zmdi-account-calendar"></i> <span>Interval Dates Recipes</span>
+                    </a>
+                </li>
+                <li>
+                    <a asp-action="">
+                        <i class="zmdi zmdi-alert-circle"></i> <span>Recipes Requests</span>
                     </a>
                 </li>
 
-                <li>
-                    <a href="tables">
-                        <i class="zmdi zmdi-grid"></i> <span>Tables</span>
-                    </a>
-                </li>
-@* 
-                <li>
-                    <a href="calendar">
-                        <i class="zmdi zmdi-calendar-check"></i> <span>Calendar</span>
-                        <small class="badge float-right badge-light">New</small>
-                    </a>
-                </li> *@
-
-                <li>
-                    <a href="profile">
-                        <i class="zmdi zmdi-face"></i> <span>Profile</span>
-                    </a>
-                </li>
+         
 
                 <li>
                     <a asp-controller="Auth" asp-action="login" target="_blank">

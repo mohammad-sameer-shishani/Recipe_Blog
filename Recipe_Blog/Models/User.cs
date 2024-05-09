@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Recipe_Blog.Models;
 
@@ -22,6 +23,10 @@ public partial class User
     public virtual ICollection<Comment> Comments { get; set; } = new List<Comment>();
 
     public virtual ICollection<Login> Logins { get; set; } = new List<Login>();
+
+    [NotMapped]
+    public virtual Login? CustomLogins { get; set; }
+
 
     public virtual ICollection<Recipe> Recipes { get; set; } = new List<Recipe>();
 

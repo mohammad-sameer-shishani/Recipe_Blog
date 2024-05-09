@@ -8,16 +8,12 @@ namespace Recipe_Blog.Controllers
     public class AuthController : Controller
     {
         private readonly ModelContext _context;
-        public AuthController(ModelContext context)
+        public  AuthController(ModelContext context)
         {
-            _context = context;
+             _context = context;
         }
 
-        public IActionResult ChoosingRole()
-        {
-            return View();
-        }
-
+      
 
         public IActionResult Login()
         {
@@ -26,7 +22,9 @@ namespace Recipe_Blog.Controllers
         [HttpPost]
         public async Task<IActionResult> Login([Bind("UserName,Password")]LoginViewModel login)
         {
-			if (!ModelState.IsValid)
+			
+			HttpContext.Session.Clear();
+            if (!ModelState.IsValid)
 			{
 				return View(login);
 			}
@@ -53,14 +51,24 @@ namespace Recipe_Blog.Controllers
 			switch (roleId)
 			{
 				case 1: // Admin
-					HttpContext.Session.SetInt32("adminSession", (int)userId_); //{"adminSession": 5}
+					HttpContext.Session.SetInt32("adminSession", (int)userId_);
+					
                     return RedirectToAction("Index", "Admin");
+
 				case 2: // chef
 					HttpContext.Session.SetInt32("chefSession", (int)userId_);
-					return RedirectToAction("Create","ChefRecipes");
+					var chefid = HttpContext.Session.GetInt32("chefSession");
+					var chef_=_context.Users.SingleOrDefaultAsync(u => u.Id == chefid);
+					ViewBag.thisChef = chef_;
+                    return RedirectToAction("Index","ChefRecipes");
+
 				case 3: // user/customer
 					HttpContext.Session.SetInt32("userSession", (int)userId_);
+                    var userid = HttpContext.Session.GetInt32("userSession");
+                    var user_ = _context.Users.SingleOrDefaultAsync(u => u.Id == userid);
+                    ViewBag.thisUser = user_;
                     return RedirectToAction("Index", "Home");
+
 				default:
 					ModelState.AddModelError("","Something Error");
 					return View(login);

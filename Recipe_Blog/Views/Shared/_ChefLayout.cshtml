@@ -1,4 +1,5 @@
 ﻿@{
+    
     User chef = ViewBag.thisChef;
     Login login = ViewBag.thisChefLogin;
 }
@@ -56,6 +57,17 @@
                 <li>
                     <a href="profile">
                         <i class="zmdi zmdi-face"></i> <span>My Profile</span>
+                    </a>
+                </li>
+
+                <li>
+                    <a asp-action="index">
+                        <i class="zmdi zmdi-format-list-bulleted"></i> <span>All Recipes</span>
+                    </a>
+                </li>
+                <li>
+                    <a asp-action="MyRecipes">
+                        <i class="zmdi zmdi-format-list-bulleted"></i> <span>My Recipes</span>
                     </a>
                 </li>
 
