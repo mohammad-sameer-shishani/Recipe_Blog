@@ -1,0 +1,44 @@
+﻿@model Category
+
+@{
+    ViewData["Title"] = "CategoryDetails";
+    Layout = "~/Views/Shared/_UserLayout.cshtml";
+}
+
+<h3 class="mx-5">Category Details</h3>
+
+<div class="m-5">
+    <hr />
+    <dl class="row">
+        <dt class = "col-sm-2" a>
+            @Html.DisplayNameFor(model => model.Name)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.Name)
+        </dd>@* 
+        <img src="~/User/img/shishani_recipe-removebg-preview.png" class="card-img-top" alt="..."> *@
+        @if (Model.Recipes != null)
+            @foreach(var i in Model.Recipes.Where(u=>u.CategoryId==Model.Id))
+            {
+                <div class="card m-3" style="width: 18rem;">
+                    <img src="~/User/@i.Imgpath" class="card-img-top" alt="...">
+                    <div class="card-body">
+                        <h5 class="card-title"><strong>Recipe: </strong>@i.Name</h5>
+                    </div>
+                    <ul class="list-group list-group-flush">
+                        <li class="list-group-item"><strong>Chef : </strong>Chef : @i.Name</li>
+                        <li class="list-group-item"><strong>Price: </strong>$@i.Price</li>
+                        <li class="list-group-item"><strong>Category: </strong>@i.Category.Name</li>
+                    </ul>
+                        <h5 class="card-text mx-3"><strong>Description: </strong>@i.Description</h5>
+                    <div class="card-body row align-content-end">
+                        <a asp-action="RecipeDetails" asp-route-id="@i.Id" class="card-link btn btn-outline-primary col">More Details</a>
+                        <a asp-action="Checkout" asp-route-id="@i.Id" class="card-link btn btn-primary col">Buy Recipe</a>
+                    </div>
+                </div>
+            }
+    </dl>
+</div>
+<div class="m-5">
+    <a class="btn btn-primary" asp-action="Index">Back to List</a>
+</div>

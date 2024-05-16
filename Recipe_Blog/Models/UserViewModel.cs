@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 using Microsoft.EntityFrameworkCore;
 
 namespace Recipe_Blog.Models
@@ -10,7 +11,7 @@ namespace Recipe_Blog.Models
 		public string? Firstname { get; set; }
 		[Display(Name = "Last Name")]
 		public string? Lastname { get; set; }
-        
+        //[DataType(DataType.Date)]
         public DateTime? Birthdate { get; set; }
         [Required]
 		[StringLength(100)]
@@ -21,8 +22,12 @@ namespace Recipe_Blog.Models
         [Required]
 		[StringLength(50)]
 		public string UserName { get; set; } = null!;
+        [NotMapped]
+        public IFormFile? imageFile { get; set; }
         public decimal? UserId { get; set; }
-        public decimal Roleid { get; set; } 
+		[NotMapped]
+		public decimal? GenderId { get; set; }
+		public decimal Roleid { get; set; } 
 		public string? Gender { get; set; }
 	}
 }

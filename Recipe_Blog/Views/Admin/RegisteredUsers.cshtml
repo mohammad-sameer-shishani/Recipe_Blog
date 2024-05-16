@@ -20,7 +20,7 @@
                             <th scope="col">Last Name</th>
                             <th scope="col">UserName</th>
                             <th scope="col">Email</th>
-                            <th scope="col">Birth Date</th>
+                            
                         </tr>
                     </thead>
                     <tbody>
@@ -36,7 +36,10 @@
                                     <td>@item.User.Lastname</td>
                                     <td>@item.UserName</td>
                                     <td>@item.Email</td>
-                                    <td>@item.User.Birthdate</td>
+                                    
+                                    <td>
+                                        <a asp-action="UserDetails"  asp-route-id="@item.User.Id">View</a>
+                                    </td>
                                 </tr>
                                 i++;
                             }

@@ -2403,4 +2403,8 @@
     <PackageReference Include="Oracle.EntityFrameworkCore" Version="7.21.9" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="wwwroot\Images\" />
+  </ItemGroup>
+
 </Project>

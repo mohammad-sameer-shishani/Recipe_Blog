@@ -1,0 +1,57 @@
+﻿@model Recipe_Blog.Models.Recipe
+
+@{
+    ViewData["Title"] = "Create";
+    Layout = "~/Views/Shared/_ChefLayout.cshtml";
+}
+
+<h1 class="mx-5">Create a Recipe</h1>
+
+    <div class="row m-5">
+        <form asp-action="Create">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+        <div class="row">
+            <div class="form-group col-md-4 d-none">
+                <label asp-for="RecipeStatusId" class="control-label"></label>
+                <input asp-for="RecipeStatusId" class="form-control" value="1" />
+            </div>
+            <div class="form-group col-md-4 ">
+                <label asp-for="Name" class="control-label"></label>
+                <input asp-for="Name" class="form-control" placeholder="Recipe Name " />
+                <span asp-validation-for="Name" class="text-danger"></span>
+            </div>
+            <div class="form-group col-md-4">
+                <label asp-for="Price" class="control-label"></label>
+                <input asp-for="Price" class="form-control" placeholder="Recipe Price $" />
+                <span asp-validation-for="Price" class="text-danger"></span>
+            </div>
+            <div class="form-group col-md-4">
+                <label asp-for="CategoryId" class="control-label"></label>
+                <select asp-for="CategoryId" class="form-control" asp-items="ViewBag.CategoryId" ></select>
+            </div>
+            <div class="form-group col-12 mb-4">
+                <label asp-for="Ingredients" class="control-label"></label>
+                <textarea asp-for="Ingredients" rows="3" class="form-control" placeholder="item1, item2,..."></textarea>
+                <span asp-validation-for="Ingredients" class="text-danger"></span>
+            </div>
+            <div class="form-group col-12 mb-4">
+                <label asp-for="Description" class="control-label"></label>
+                <textarea asp-for="Description" rows="3" class="form-control" placeholder="About your recipe"></textarea>
+                <span asp-validation-for="Description" class="text-danger"></span>
+            </div>
+            <div class="form-group col-12 mb-4">
+                <label asp-for="Instructions" class="control-label"></label>
+                <textarea asp-for="Instructions" rows="3" class="form-control" placeholder="How to make the recipe"></textarea>
+                <span asp-validation-for="Instructions" class="text-danger"></span>
+            </div>
+            <div class="form-group col-12 justify-content-center align-content-center">
+                <input type="submit" value="Add To My Recipes" class="justify-content-center align-items-center col-9 col-lg-3 btn btn-primary rounded" />
+            </div>
+        </div>
+ 
+        </form>
+    </div>
+
+
+
+

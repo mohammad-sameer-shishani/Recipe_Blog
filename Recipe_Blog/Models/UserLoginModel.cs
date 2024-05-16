@@ -9,7 +9,7 @@ namespace Recipe_Blog.Models
         public string? Firstname { get; set; }
         [Display(Name = "Last Name")]
         public string? Lastname { get; set; }
-
+        [DataType(DataType.Date)]
         public DateTime? Birthdate { get; set; }
 
         public string? Gender { get; set; }

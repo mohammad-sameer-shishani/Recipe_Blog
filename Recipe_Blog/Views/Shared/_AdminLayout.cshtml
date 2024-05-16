@@ -1,4 +1,7 @@
 ﻿
+@{
+    User a = ViewBag.currentAdmin;
+}
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -7,7 +10,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
     <meta name="description" content="" />
     <meta name="author" content="" />
-    <title>Recipe Blog Admin</title>
+    <title>Shishani Recipes Admin</title>
     <!-- loader-->
     <link href="~/admin/css/pace.min.css" rel="stylesheet" />
     <!--favicon-->
@@ -50,7 +53,7 @@
                     </a>
                 </li>
                 <li>
-                    <a asp-action="Profile">
+                    <a asp-action="Profile" >
                         <i class="zmdi zmdi-face"></i> <span>Profile</span>
                     </a>
                 </li>
@@ -63,45 +66,49 @@
                     <div id="collapsePages" class="collapse" >
                         <div class="py-2 collapse-inner rounded">
                             <span><h6 class="mx-3 collapse-header">Login Screens:</h6></span>
-                            <span><a class="mx-5 collapse-item" asp-action="login">Login</a></span><br />
-                            <span><a class="mx-5 collapse-item" asp-action="register">Register</a></span><br />
-                            <span><a class="mx-5 collapse-item" asp-action="forgotpassword">Forgot Password</a></span><br />
+                            <span><a class="mx-5 collapse-item" asp-controller="Auth" asp-action="login">Login</a></span><br />
+                            <span><a class="mx-5 collapse-item" asp-controller="Auth" asp-action="register">Register</a></span><br />
+                            <span><a class="mx-5 collapse-item" asp-controller="Auth" asp-action="forgotpassword">Forgot Password</a></span><br />
+                            <span><h6 class="mx-3 collapse-header">Home screens:</h6></span>
                             <span><a class="mx-5 collapse-item" asp-action="">Home</a></span><br />
-                            <span><a class="mx-5 collapse-item" asp-action="">Testimonials</a></span><br />
                             <span><a class="mx-5 collapse-item" asp-action="">About Us</a></span><br />
-                            <span><a class="mx-5 collapse-item" asp-action="">Contact Us</a></span><br />
+                            <span><a class="mx-5 collapse-item" asp-action="ContactUs">Contact Us</a></span><br />
+                            <span><h6 class="mx-3 collapse-header">Testimonials screens:</h6></span>
+                            <span><a class="mx-5 collapse-item" asp-controller="Testimonials" asp-action="Pending">Pending</a></span><br />
+                            <span><a class="mx-5 collapse-item" asp-controller="Testimonials" asp-action="Accepted">Accepted</a></span><br />
+                            <span><a class="mx-5 collapse-item" asp-controller="Testimonials" asp-action="Rejected">Rejected</a></span><br />
                         </div>
                     </div>
                 </li>
                
 
                 <li>
-                    <a asp-action="RegisteredUsers">
+                    <a asp-action="RegisteredUsers" asp-controller="admin">
                         <i class="zmdi zmdi-account-circle"></i> <span>Registered Users</span>
                     </a>
                 </li>
                 <li>
-                    <a asp-action="RegisteredChefs">
+                    <a asp-action="RegisteredChefs" asp-controller="admin">
                         <i class="zmdi zmdi-account-circle"></i> <span>Registered Chefs</span>
                     </a>
                 </li>
                 <li>
-                    <a asp-action="">
+                    <a asp-action="Recipes" asp-controller="admin">
                         <i class="zmdi zmdi-format-list-bulleted"></i> <span>Recipes</span>
                     </a>
                 </li>
                 <li>
-                    <a asp-action="">
+                    <a asp-action="Categories" asp-controller="admin">
                         <i class="zmdi zmdi-format-list-bulleted"></i> <span>Categories</span>
                     </a>
                 </li>
                 <li>
-                    <a asp-action="">
+                    <a asp-action="Search">
                         <i class="zmdi zmdi-account-calendar"></i> <span>Interval Dates Recipes</span>
                     </a>
                 </li>
                 <li>
-                    <a asp-action="">
+                    <a asp-action="Requests">
                         <i class="zmdi zmdi-alert-circle"></i> <span>Recipes Requests</span>
                     </a>
                 </li>
@@ -115,7 +122,7 @@
                 </li>
 
                 <li>
-                    <a asp-controller="Auth" asp-action="register" target="_blank">
+                    <a asp-controller="Auth" asp-action="index" target="_blank">
                         <i class="zmdi zmdi-account-circle"></i> <span>Registration</span>
                     </a>
                 </li>
@@ -201,7 +208,6 @@
 
         <div class="content-wrapper">
         @RenderBody()
-
         </div><!--End content-wrapper-->
         <!--Start Back To Top Button-->
         <a href="javaScript:void();" class="back-to-top"><i class="fa fa-angle-double-up"></i> </a>

@@ -1,0 +1,47 @@
+﻿@model IEnumerable<Recipe_Blog.Models.Request>
+
+@{
+    ViewData["Title"] = "Requests";
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+}
+
+<h2 class="mx-5">Orders</h2>
+
+<table class="table mx-5">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.Requestdate)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Tax)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Recipe)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.User)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model) {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.Requestdate)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Tax)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Recipe.Name)
+            </td>
+            <td>
+                    @Html.DisplayFor(modelItem => item.User.Firstname)
+                    @Html.DisplayFor(modelItem => item.User.Lastname)
+            </td>
+        </tr>
+}
+    </tbody>
+</table>

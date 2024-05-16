@@ -1,6 +1,6 @@
 ﻿@{
     
-    User chef = ViewBag.thisChef;
+    User chef = ViewBag.thisChef; 
     Login login = ViewBag.thisChefLogin;
 }
 <!DOCTYPE html>
@@ -11,7 +11,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
     <meta name="description" content="" />
     <meta name="author" content="" />
-    <title>Recipe Blog Admin</title>
+    <title>Shishani Recipes Chef</title>
     <!-- loader-->
     <link href="~/admin/css/pace.min.css" rel="stylesheet" />
     <!--favicon-->
@@ -55,8 +55,8 @@
                 </li> 
 
                 <li>
-                    <a href="profile">
-                        <i class="zmdi zmdi-face"></i> <span>My Profile</span>
+                    <a asp-action="Profile">
+                        <i class="zmdi zmdi-face"></i> <span>Profile</span>
                     </a>
                 </li>
 

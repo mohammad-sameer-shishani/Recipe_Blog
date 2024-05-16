@@ -1,5 +1,18 @@
-﻿@*
-    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
-*@
+﻿@model IEnumerable<Recipe_Blog.Models.Contactu>
+
 @{
+    ViewData["Title"] = "ContactUs";
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
 }
+
+<h3 class="mx-5">Contact Us</h3>
+
+@foreach (var item in Model)
+{
+    <div class="m-3 border border-1 rounded p-2">
+        <div class="row "><h6 class="col">Name: @item.Username</h6>|<h6 class="col">Email: @item.Useremail</h6>|<h6 class="col">Subject: @item.Subject</h6></div>
+        <hr/>
+        <div ><h5 class="w-100 ">Message: @item.Message </h5></div>
+    </div>
+}
+

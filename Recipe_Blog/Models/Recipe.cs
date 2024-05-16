@@ -1,13 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
-using MessagePack;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Recipe_Blog.Models;
 
 public partial class Recipe
 {
-    
     public decimal Id { get; set; }
 
     public decimal Price { get; set; }
@@ -19,14 +17,23 @@ public partial class Recipe
     public string? Name { get; set; }
 
     public decimal? UserId { get; set; }
-    [Display(Name = "Category")]
+
     public decimal? CategoryId { get; set; }
+
+    public decimal? RecipeStatusId { get; set; }
+
+    public string? Imgpath { get; set; }
+    [NotMapped]
+    public IFormFile? ImageFile { get; set; }
+    public string? Ingredients { get; set; }
+
+    public string? Instructions { get; set; }
 
     public virtual Category? Category { get; set; }
 
     public virtual ICollection<Comment> Comments { get; set; } = new List<Comment>();
 
-    public virtual ICollection<Ingredient> Ingredients { get; set; } = new List<Ingredient>();
+    public virtual Status? RecipeStatus { get; set; }
 
     public virtual ICollection<Request> Requests { get; set; } = new List<Request>();
 

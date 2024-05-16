@@ -1,0 +1,38 @@
+﻿@model Recipe_Blog.Models.Category
+
+@{
+    ViewData["Title"] = "CreateCategory";
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+}
+
+<h3 class="mx-5">Create Category</h3>
+
+<hr />
+<div class="row mx-5">
+    <div class="col-md-4">
+        <form asp-action="CreateCategory" enctype="multipart/form-data">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="form-group">
+                <label asp-for="Name" class="control-label"></label>
+                <input asp-for="Name" class="form-control" />
+                <span asp-validation-for="Name" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="ImageFile" class="control-label"></label>
+                <input asp-for="ImageFile" class="form-control" />
+                <span asp-validation-for="ImageFile" class="text-danger"></span>
+            </div>
+            <div class="row ">
+                <div class="form-group mx-1">
+                    <input type="submit" value="Create" class="btn btn-primary"  />
+                </div>
+                <div class="btn btn-danger form-group mx-1">
+                    <a asp-action="Categories">Cancel</a>
+                </div>
+
+            </div>
+        </form>
+    </div>
+</div>
+
+

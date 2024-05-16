@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using Recipe_Blog.Models;
 
@@ -8,14 +9,21 @@ namespace Recipe_Blog.Controllers
     public class AuthController : Controller
     {
         private readonly ModelContext _context;
-        public  AuthController(ModelContext context)
+        private readonly IWebHostEnvironment _webHostEnvironment;
+
+        public AuthController(ModelContext context, IWebHostEnvironment webHostEnvironment)
         {
              _context = context;
+            _webHostEnvironment = webHostEnvironment;
+
         }
 
-      
-
-        public IActionResult Login()
+        //GET: Index
+        public IActionResult Index()
+		{
+			return View();
+		}
+		public IActionResult Login()
         {
             return View();
         }
@@ -60,14 +68,14 @@ namespace Recipe_Blog.Controllers
 					var chefid = HttpContext.Session.GetInt32("chefSession");
 					var chef_=_context.Users.SingleOrDefaultAsync(u => u.Id == chefid);
 					ViewBag.thisChef = chef_;
-                    return RedirectToAction("Index","ChefRecipes");
+                    return RedirectToAction("Index","Chef");
 
 				case 3: // user/customer
 					HttpContext.Session.SetInt32("userSession", (int)userId_);
                     var userid = HttpContext.Session.GetInt32("userSession");
                     var user_ = _context.Users.SingleOrDefaultAsync(u => u.Id == userid);
                     ViewBag.thisUser = user_;
-                    return RedirectToAction("Index", "Home");
+                    return RedirectToAction("Index", "User");
 
 				default:
 					ModelState.AddModelError("","Something Error");
@@ -76,22 +84,24 @@ namespace Recipe_Blog.Controllers
 
           
         }
-        public IActionResult Register()
+        public IActionResult RegisterAsUser()
         {
             return View();
         }
         [HttpPost]
 		[ValidateAntiForgeryToken]
-		public async Task<IActionResult> Register(UserViewModel userViewModel, decimal Roleid)
+		public async Task<IActionResult> RegisterAsUser(UserViewModel userViewModel)
         {
-
-            if (ModelState.IsValid)
+			if (ModelState.IsValid)
             {
                 User user = new User();
                 user.Firstname = userViewModel.Firstname;
                 user.Lastname = userViewModel.Lastname;
-                user.RoleId = Roleid;
-                await _context.AddAsync(user);
+                user.RoleId = 3;
+                user.Birthdate = userViewModel.Birthdate;
+				user.Imgpath = "~/User/img/man-default.png";
+
+				await _context.AddAsync(user);
 				await _context.SaveChangesAsync();
                 userViewModel.UserId = user.Id;
 
@@ -107,6 +117,40 @@ namespace Recipe_Blog.Controllers
             return View();
             
         }
+		//GET: Register as chef
+		public IActionResult RegisterAsChef()
+		{
+			return View();
+		}
+		[HttpPost]
+		[ValidateAntiForgeryToken]
+		public async Task<IActionResult> RegisterAsChef(UserViewModel userViewModel)
+		{
+
+			if (ModelState.IsValid)
+			{
+				User user = new User();
+				user.Firstname = userViewModel.Firstname;
+				user.Lastname = userViewModel.Lastname;
+				user.RoleId = 2;
+				user.Birthdate = userViewModel.Birthdate;
+				user.Imgpath = "~/User/img/chef.png";
+				await _context.AddAsync(user);
+				await _context.SaveChangesAsync();
+				userViewModel.UserId = user.Id;
+
+				Login login = new Login();
+				login.Email = userViewModel.Email;
+				login.UserName = userViewModel.UserName;
+				login.Password = userViewModel.Password;
+				login.UserId = userViewModel.UserId;
+				await _context.AddAsync(login);
+				await _context.SaveChangesAsync();
+				return RedirectToAction("Login", "Auth");
+			}
+			return View();
+
+		}
 		public IActionResult CompleteRegister()
 		{
 			return View();
@@ -133,5 +177,32 @@ namespace Recipe_Blog.Controllers
 		
 			return View(nameof(Login));
 		}
-	}
+        //public IActionResult UpdateProfile(decimal id, [Bind("Id,FirstName,Lastname,Email,Username,Password")]UpdateProfile updateProfile)
+        //{
+          
+
+        //    if (ModelState.IsValid)
+        //    {
+        //        try
+        //        {
+        //            _context.Update(recipe);
+        //            await _context.SaveChangesAsync();
+        //        }
+        //        catch (DbUpdateConcurrencyException)
+        //        {
+        //            if (!RecipeExists(recipe.Id))
+        //            {
+        //                return NotFound();
+        //            }
+        //            else
+        //            {
+        //                throw;
+        //            }
+        //        }
+        //        return RedirectToAction(nameof(Index));
+        //    }
+        //    ViewData["CategoryId"] = new SelectList(_context.Categories, "Id", "Id", recipe.CategoryId);
+        //    ViewData["UserId"] = new SelectList(_context.Users, "Id", "Id", recipe.UserId);
+        //    return View(recipe);
+    }
 }

@@ -1,0 +1,40 @@
+﻿@model IEnumerable<Recipe_Blog.Models.Category>
+@using Microsoft.AspNetCore.Http
+@inject IHttpContextAccessor accessor;
+@{
+    ViewData["Title"] = "Index";
+    Layout = "~/Views/Shared/_UserLayout.cshtml";
+}
+
+<h3 class="m-5">Categories</h3>
+
+<table class="m-5 table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.Name)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model) {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.Name)
+            </td>
+            <td>
+                    @if (accessor.HttpContext.Session.GetInt32("userSession") != null)
+                    {
+                        <a asp-action="CategoryDetails" asp-route-id="@item.Id">Details</a>
+                    }
+                    else
+                    {
+                        <a asp-action="login" asp-controller="Auth">Details</a>
+                    }
+                     
+            </td>
+        </tr>
+}
+    </tbody>
+</table>

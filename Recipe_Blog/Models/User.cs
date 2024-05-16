@@ -1,32 +1,32 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Recipe_Blog.Models;
 
 public partial class User
 {
-    [Key]
     public decimal Id { get; set; }
-    [Display(Name ="First Name")]
-    public string? Firstname { get; set; }
-	[Display(Name = "Last Name")]
-	public string? Lastname { get; set; }
-    
-    public DateTime? Birthdate { get; set; }
 
-    public string? Gender { get; set; }
+    public string? Firstname { get; set; }
+
+    public string? Lastname { get; set; }
+
+    public DateTime? Birthdate { get; set; }
 
     public decimal? RoleId { get; set; }
 
+    public string? Imgpath { get; set; }
+    [NotMapped]
+    public IFormFile? ImageFile { get; set; }
+
+    public decimal? GenderId { get; set; }
+
     public virtual ICollection<Comment> Comments { get; set; } = new List<Comment>();
 
+    public virtual Gender? Gender { get; set; }
+
     public virtual ICollection<Login> Logins { get; set; } = new List<Login>();
-
-    [NotMapped]
-    public virtual Login? CustomLogins { get; set; }
-
 
     public virtual ICollection<Recipe> Recipes { get; set; } = new List<Recipe>();
 

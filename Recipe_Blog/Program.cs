@@ -17,7 +17,9 @@ namespace Recipe_Blog
 			{
 				options.IdleTimeout = TimeSpan.FromMinutes(30);
 			});
-			var app = builder.Build();
+            builder.Services.AddHttpContextAccessor();
+
+            var app = builder.Build();
 
             // Configure the HTTP request pipeline.
             if (!app.Environment.IsDevelopment())
@@ -38,7 +40,7 @@ namespace Recipe_Blog
 
             app.MapControllerRoute(
                 name: "default",
-                pattern: "{controller=Auth}/{action=Login}/{id?}");
+                pattern: "{controller=User}/{action=Index}/{id?}");
 
             app.Run();
         }

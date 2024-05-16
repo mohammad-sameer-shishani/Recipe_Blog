@@ -1,12 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
 
 namespace Recipe_Blog.Models;
 
 public partial class Comment
 {
-    [Key]
     public decimal Id { get; set; }
 
     public string? Message { get; set; }

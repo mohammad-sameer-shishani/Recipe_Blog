@@ -4,6 +4,22 @@
     User u= ViewBag.currentAdmin;
     var userCount = ViewBag.userCount;
     var chefCount = ViewBag.chefCount;
+    var categoriesCount = ViewBag.categoriesCount;
+    var testimonialAccCount = ViewBag.testimonialAcceptedCount;
+    var testimonialPendCount = ViewBag.testimonialPendingCount;
+    var testimonialRejCount = ViewBag.testimonialRejectedCount;
+    var categoryCount = ViewBag.categoriesCount;
+    var recipeAccCount = ViewBag.recipeAcceptedCount;
+    var recipePendCount = ViewBag.recipePendingdCount;
+    var recipeRejCount = ViewBag.recipeRejectedCount;
+    double up = (double)userCount / (userCount + chefCount) * 100;
+    double cp = (double)chefCount / (userCount + chefCount) * 100;
+    double rap = (double)recipeAccCount / (recipeAccCount + recipePendCount + recipeRejCount) * 100;
+    double rpp = (double)recipePendCount / (recipeAccCount + recipePendCount + recipeRejCount) * 100;
+    double rrp = (double)recipeRejCount / (recipeAccCount + recipePendCount + recipeRejCount) * 100;
+    double tap = (double)testimonialAccCount / (testimonialAccCount + testimonialPendCount + testimonialRejCount) * 100;
+    double tpp = (double)testimonialRejCount / (testimonialAccCount + testimonialPendCount + testimonialRejCount) * 100;
+    double trp = (double)testimonialRejCount / (testimonialAccCount + testimonialPendCount + testimonialRejCount) * 100;
 }
 
 
@@ -14,40 +30,85 @@
     <div class="card mt-3">
         <div class="card-content">
             <div class="row row-group m-0">
-                <div class="col-12 col-lg-6 col-xl-3 border-light">
+                <div class="col-12 col-lg-6 col-xl-4 border-light">
                     <div class="card-body">
                         <h5 class="text-white mb-0">@userCount<span class="float-right"><i class="zmdi zmdi-account-circle"></i></span></h5>
                         <div class="progress my-3" style="height:3px;">
-                            <div class="progress-bar" style="width:55%"></div>
+                            <div class="progress-bar" style="width:@up%"></div>
                         </div>
-                        <p class="mb-0 text-white small-font">Registered Users<span class="float-right">+4.2% <i class="zmdi zmdi-long-arrow-up"></i></span></p>
+                        <p class="mb-0 text-white small-font">Registered Users<span class="float-right">@up% <i class="zmdi zmdi-long-arrow-up"></i></span></p>
                     </div>
                 </div>
-                <div class="col-12 col-lg-6 col-xl-3 border-light">
+                <div class="col-12 col-lg-6 col-xl-4 border-light">
                     <div class="card-body">
                         <h5 class="text-white mb-0">@chefCount<span class="float-right"><i class="zmdi zmdi-account-circle"></i></span></h5>
                         <div class="progress my-3" style="height:3px;">
-                            <div class="progress-bar" style="width:55%"></div>
+                            <div class="progress-bar" style="width:@cp%"></div>
                         </div>
-                        <p class="mb-0 text-white small-font">Registered Chefs<span class="float-right">+1.2% <i class="zmdi zmdi-long-arrow-up"></i></span></p>
+                        <p class="mb-0 text-white small-font">Registered Chefs<span class="float-right">@cp% <i class="zmdi zmdi-long-arrow-up"></i></span></p>
                     </div>
                 </div>
-                <div class="col-12 col-lg-6 col-xl-3 border-light">
+                <div class="col-12 col-lg-6 col-xl-4 border-light">
                     <div class="card-body">
-                        <h5 class="text-white mb-0">6200 <span class="float-right"><i class="fa fa-eye"></i></span></h5>
+                        <h5 class="text-white mb-0">@categoriesCount<span class="float-right"><i class="zmdi zmdi-badge-check"></i></span></h5>
                         <div class="progress my-3" style="height:3px;">
-                            <div class="progress-bar" style="width:55%"></div>
+                            <div class="progress-bar" style="width:100%"></div>
                         </div>
-                        <p class="mb-0 text-white small-font">Visitors <span class="float-right">+5.2% <i class="zmdi zmdi-long-arrow-up"></i></span></p>
+                        <p class="mb-0 text-white small-font">Total Categories<span class="float-right">100% <i class="zmdi zmdi-long-arrow-up"></i></span></p>
                     </div>
                 </div>
-                <div class="col-12 col-lg-6 col-xl-3 border-light">
+                <div class="col-12 col-lg-6 col-xl-4 border-light">
                     <div class="card-body">
-                        <h5 class="text-white mb-0">5630 <span class="float-right"><i class="fa fa-envira"></i></span></h5>
+                        <h5 class="text-white mb-0">@testimonialPendCount <span class="float-right"><i class="zmdi zmdi-book"></i></span></h5>
                         <div class="progress my-3" style="height:3px;">
-                            <div class="progress-bar" style="width:55%"></div>
+                            <div class="progress-bar" style="width:@tpp%"></div>
                         </div>
-                        <p class="mb-0 text-white small-font">Messages <span class="float-right">+2.2% <i class="zmdi zmdi-long-arrow-up"></i></span></p>
+                        <p class="mb-0 text-white small-font">Pending Testimonials<span class="float-right">@tpp% <i class="zmdi zmdi-long-arrow-up"></i></span></p>
+                    </div>
+                </div>
+                <div class="col-12 col-lg-6 col-xl-4 border-light">
+                    <div class="card-body">
+                        <h5 class="text-white mb-0">@testimonialAccCount <span class="float-right"><i class="zmdi zmdi-book"></i></span></h5>
+                        <div class="progress my-3" style="height:3px;">
+                            <div class="progress-bar" style="width:@tap%"></div>
+                        </div>
+                        <p class="mb-0 text-white small-font">Accepted Testimonials<span class="float-right">@tap% <i class="zmdi zmdi-long-arrow-up"></i></span></p>
+                    </div>
+                </div>
+                <div class="col-12 col-lg-6 col-xl-4 border-light">
+                    <div class="card-body">
+                        <h5 class="text-white mb-0">@testimonialRejCount <span class="float-right"><i class="zmdi zmdi-book"></i></span></h5>
+                        <div class="progress my-3" style="height:3px;">
+                            <div class="progress-bar" style="width:@trp%"></div>
+                        </div>
+                        <p class="mb-0 text-white small-font">Rejected Testimonials<span class="float-right">@trp% <i class="zmdi zmdi-long-arrow-up"></i></span></p>
+                    </div>
+                </div>
+                <div class="col-12 col-lg-6 col-xl-4 border-light">
+                    <div class="card-body">
+                        <h5 class="text-white mb-0">@recipePendCount <span class="float-right"><i class="zmdi zmdi-cake"></i></span></h5>
+                        <div class="progress my-3" style="height:3px;">
+                            <div class="progress-bar" style="width:@rpp%"></div>
+                        </div>
+                        <p class="mb-0 text-white small-font">Pend recipes<span class="float-right">@rpp% <i class="zmdi zmdi-long-arrow-up"></i></span></p>
+                    </div>
+                </div>
+                <div class="col-12 col-lg-6 col-xl-4 border-light">
+                    <div class="card-body">
+                        <h5 class="text-white mb-0">@recipeAccCount <span class="float-right"><i class="zmdi zmdi-cake"></i></span></h5>
+                        <div class="progress my-3" style="height:3px;">
+                            <div class="progress-bar" style="width:@rap%"></div>
+                        </div>
+                        <p class="mb-0 text-white small-font">Accepted recipes<span class="float-right">@rap% <i class="zmdi zmdi-long-arrow-up"></i></span></p>
+                    </div>
+                </div>
+                <div class="col-12 col-lg-6 col-xl-4 border-light">
+                    <div class="card-body">
+                        <h5 class="text-white mb-0">@recipeRejCount <span class="float-right"><i class="zmdi zmdi-cake"></i></span></h5>
+                        <div class="progress my-3" style="height:3px;">
+                            <div class="progress-bar" style="width:@rrp%"></div>
+                        </div>
+                        <p class="mb-0 text-white small-font">Rejected recipes<span class="float-right">@rrp% <i class="zmdi zmdi-long-arrow-up"></i></span></p>
                     </div>
                 </div>
             </div>

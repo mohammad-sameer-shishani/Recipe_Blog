@@ -1,84 +1,14 @@
-﻿@model User
+﻿@model Login
 @{
     Layout = "~/Views/Shared/_AdminLayout.cshtml";
-    User u = ViewBag.currentAdmin;
+    // User u = ViewBag.currentAdmin;
     var userCount = ViewBag.userCount;
     var chefCount = ViewBag.chefCount;
 }
 <div class="container-fluid">
 
     <div class="row mt-3">
-        <div class="col-lg-4">
-            <div class="card profile-card-2">
-                <div class="card-img-block">
-                    <img class="img-fluid" src="https://via.placeholder.com/800x500" alt="Card image cap">
-                </div>
-                <div class="card-body pt-5">
-                    <img src="https://via.placeholder.com/110x110" alt="profile-image" class="profile">
-                    <h5 class="card-title">Mark Stern</h5>
-                    <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
-                    <div class="icon-block">
-                        <a href="javascript:void();"><i class="fa fa-facebook bg-facebook text-white"></i></a>
-                        <a href="javascript:void();"> <i class="fa fa-twitter bg-twitter text-white"></i></a>
-                        <a href="javascript:void();"> <i class="fa fa-google-plus bg-google-plus text-white"></i></a>
-                    </div>
-                </div>
-
-                <div class="card-body border-top border-light">
-                    <div class="media align-items-center">
-                        <div>
-                            <img src="~/admin/images/timeline/html5.svg" class="skill-img" alt="skill img">
-                        </div>
-                        <div class="media-body text-left ml-3">
-                            <div class="progress-wrapper">
-                                <p>HTML5 <span class="float-right">65%</span></p>
-                                <div class="progress" style="height: 5px;">
-                                    <div class="progress-bar" style="width:65%"></div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <hr>
-                    <div class="media align-items-center">
-                        <div><img src="~/admin/images/timeline/bootstrap-4.svg" class="skill-img" alt="skill img"></div>
-                        <div class="media-body text-left ml-3">
-                            <div class="progress-wrapper">
-                                <p>Bootstrap 4 <span class="float-right">50%</span></p>
-                                <div class="progress" style="height: 5px;">
-                                    <div class="progress-bar" style="width:50%"></div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <hr>
-                    <div class="media align-items-center">
-                        <div><img src="~/admin/images/timeline/angular-icon.svg" class="skill-img" alt="skill img"></div>
-                        <div class="media-body text-left ml-3">
-                            <div class="progress-wrapper">
-                                <p>AngularJS <span class="float-right">70%</span></p>
-                                <div class="progress" style="height: 5px;">
-                                    <div class="progress-bar" style="width:70%"></div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <hr>
-                    <div class="media align-items-center">
-                        <div><img src="~/admin/images/timeline/react.svg" class="skill-img" alt="skill img"></div>
-                        <div class="media-body text-left ml-3">
-                            <div class="progress-wrapper">
-                                <p>React JS <span class="float-right">35%</span></p>
-                                <div class="progress" style="height: 5px;">
-                                    <div class="progress-bar" style="width:35%"></div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                </div>
-            </div>
-
-        </div>
+      
 
         <div class="col-lg-8">
             <div class="card">
@@ -159,56 +89,62 @@
                             <!--/row-->
                         </div>                 
                         <div class="tab-pane active" id="edit">
-                            <form>
+                            <form method="POST" asp-controller="Admin" asp-action="Profile" enctype="multipart/form-data">
                                 <div class="form-group row">
                                     <label class="col-lg-3 col-form-label form-control-label">First name</label>
                                     <div class="col-lg-9">
-                                        <input class="form-control" type="text" value="Mark">
+                                        <input asp-for="User.Firstname" class="form-control" type="text" value="@Model.User.Firstname">
                                     </div>
                                 </div>
                                 <div class="form-group row">
                                     <label class="col-lg-3 col-form-label form-control-label">Last name</label>
                                     <div class="col-lg-9">
-                                        <input class="form-control" type="text" value="Jhonsan">
+                                        <input asp-for="User.Lastname" class="form-control" type="text" value="@Model.User.Lastname">
+                                    </div>
+                                </div> 
+                                <div class="form-group row">
+                                    <label class="col-lg-3 col-form-label form-control-label">Gender</label>
+                                    <div class="col-lg-9">
+                                        <input asp-for="User.Gender" class="form-control" type="text" value="@Model.User.Gender">
                                     </div>
                                 </div>
-                                <div class="form-group row">
+                              @*   <div class="form-group row">
                                     <label class="col-lg-3 col-form-label form-control-label">Email</label>
                                     <div class="col-lg-9">
-                                        <input class="form-control" type="email" value="mark@example.com">
+                                        <input class="form-control" type="email" value="@Model.Email">
                                     </div>
-                                </div>
-                                <div class="form-group row">
+                                </div> *@
+                              @*   <div class="form-group row">
                                     <label class="col-lg-3 col-form-label form-control-label">Change profile</label>
                                     <div class="col-lg-9">
                                         <input class="form-control" type="file">
                                     </div>
-                                </div>
+                                </div> *@
                               
-
+@* 
                                 <div class="form-group row">
                                     <label class="col-lg-3 col-form-label form-control-label">Username</label>
                                     <div class="col-lg-9">
-                                        <input class="form-control" type="text" value="jhonsanmark">
+                                        <input class="form-control" type="text" value="@Model.UserName">
                                     </div>
                                 </div>
                                 <div class="form-group row">
                                     <label class="col-lg-3 col-form-label form-control-label">Password</label>
                                     <div class="col-lg-9">
-                                        <input class="form-control" type="password" value="11111122333">
+                                        <input class="form-control" type="password" value="@Model.Password">
                                     </div>
                                 </div>
                                 <div class="form-group row">
                                     <label class="col-lg-3 col-form-label form-control-label">Confirm password</label>
                                     <div class="col-lg-9">
-                                        <input class="form-control" type="password" value="11111122333">
+                                        <input class="form-control" type="password" value="@Model.Password">
                                     </div>
-                                </div>
+                                </div> *@
                                 <div class="form-group row">
                                     <label class="col-lg-3 col-form-label form-control-label"></label>
                                     <div class="col-lg-9">
                                         <input type="reset" class="btn btn-secondary" value="Cancel">
-                                        <input type="button" class="btn btn-primary" value="Save Changes">
+                                        <input type="submit" class="btn btn-primary" value="Save Changes">
                                     </div>
                                 </div>
                             </form>

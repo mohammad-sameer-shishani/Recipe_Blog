@@ -1,0 +1,46 @@
+﻿@model Recipe_Blog.Models.Testimonial
+
+@{
+    ViewData["Title"] = "Edit";
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+}
+
+<h3 class="mx-5">Edit Status</h3>
+
+<hr />
+<div class="row mx-5">
+    <div class="col-md-4">
+        <form asp-action="Edit">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <input type="hidden" asp-for="Id" />
+            <div class="form-group d-none">
+                <label asp-for="Creationdate" class="control-label"></label>
+                <input asp-for="Creationdate" class="form-control" />
+                <span asp-validation-for="Creationdate" class="text-danger"></span>
+            </div>
+            <div class="form-group d-none">
+                <label asp-for="Content" class="control-label"></label>
+                <input asp-for="Content" class="form-control" />
+                <span asp-validation-for="Content" class="text-danger"></span>
+            </div>
+            <div class="form-group d-none">
+                <label asp-for="UserId" class="control-label"></label>
+                <select asp-for="UserId" class="form-control" asp-items="ViewBag.UserId" ></select>
+                <span asp-validation-for="UserId" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="TestimonialStatusId" class="control-label"></label>
+                <select asp-for="TestimonialStatusId" class="form-control" asp-items="ViewBag.TestimonialStatusId"></select>
+                <span asp-validation-for="TestimonialStatusId" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <input type="submit" value="Save" class="btn btn-primary" />
+            </div>
+        </form>
+    </div>
+</div>
+
+<div class="mx-5">
+    <a asp-action="Index" asp-controller="Admin">Back to Home</a>
+</div>
+

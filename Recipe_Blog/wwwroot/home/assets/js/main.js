@@ -194,7 +194,7 @@
         this.classList.add('filter-active');
 
         menuIsotope.arrange({
-          filter: this.getAttribute('data-filter')
+            filter: this.getAttribute('data-filter')
         });
         menuIsotope.on('arrangeComplete', function() {
           AOS.refresh()

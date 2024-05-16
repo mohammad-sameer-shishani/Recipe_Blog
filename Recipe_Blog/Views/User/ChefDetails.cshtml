@@ -1,0 +1,54 @@
+﻿@model Recipe_Blog.Models.User
+
+@{
+    ViewData["Title"] = "ChefDetails";
+    Layout = "~/Views/Shared/_UserLayout.cshtml";
+}
+
+<h3 class="m-5">ChefDetails</h3>
+
+<div class="m-5">
+    <h4>Chef</h4>
+    <hr />
+    <dl class="row">
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.Firstname)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.Firstname)
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.Lastname)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.Lastname)
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.Birthdate)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.Birthdate)
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.Gender)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.Gender)
+        </dd>
+        <dt class = "col-sm-2">
+            UserName
+        </dt>
+        <dd class = "col-sm-10">
+            @Model.Logins.SingleOrDefault(u => u.UserId == Model.Id).UserName
+        </dd>
+        <dt class="col-sm-2">
+            Number of Recipes
+        </dt>
+        <dd class="col-sm-10">
+            @Model.Recipes.Count()
+        </dd>
+    </dl>
+</div>
+<div class="m-5">
+    <a asp-action="Index">Back to List</a>
+</div>
