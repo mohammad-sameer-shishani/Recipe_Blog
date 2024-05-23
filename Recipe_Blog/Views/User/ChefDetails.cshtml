@@ -4,8 +4,40 @@
     ViewData["Title"] = "ChefDetails";
     Layout = "~/Views/Shared/_UserLayout.cshtml";
 }
+<h3 class="mx-5">Chef @Model.Firstname Details</h3>
 
-<h3 class="m-5">ChefDetails</h3>
+
+
+<div class="m-5">
+    <div class="card mb-3 col-8">
+        <div class="row g-0">
+            <div class="row col-md-12">
+                <img src="~/User/img/chef.png" class="col-6 rounded-5" alt="Chef Image">
+            </div>
+            <div class="col-md-12">
+                <div class="card-body">
+                    <h4 class="card-title"><strong>First Name :</strong> @Model.Firstname </h4>
+                    <h4 class="card-title"><strong>Last Name : </strong>@Model.Lastname</h4>
+                    <h4 class="card-title"><strong>Recipes: </strong>@Model.Recipes.Count() </h4>
+                    @if (Model.Birthdate != null)
+                    {
+                        <p class="card-text"><small class="text-body-secondary">Birthdate : @Model.Birthdate</small></p>
+                    }
+                </div>
+                <div class="row justify-content-end align-items-end">
+                    <a asp-action="Index" class="col-12 ">
+                        <h5 class="col-3 shadow m-3 btn btn-info">Go Back</h5>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+@* 
+
+<h3 class="m-5">Chef Details</h3>
 
 <div class="m-5">
     <h4>Chef</h4>
@@ -52,3 +84,4 @@
 <div class="m-5">
     <a asp-action="Index">Back to List</a>
 </div>
+ *@

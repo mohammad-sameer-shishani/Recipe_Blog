@@ -18,13 +18,133 @@ namespace Recipe_Blog.Controllers
             _context = context;
             _webHostEnvironment = webHostEnvironment;
         }
+
+        public async Task<IActionResult> GetUserRequests(decimal userId)
+        {
+          
+                var context =await _context.Requests
+                .Include(r => r.Recipe)
+                .Where(r => r.UserId == userId)
+                .ToListAsync();
+                return View(context);
+            
+        }
+        public async Task<IActionResult> GetSoldRecipes(DateTime? startDate, DateTime? endDate)
+        {
+            
+                var requests=await _context.Requests
+                    .Include(r => r.Recipe)
+                    .Where(r => r.Requestdate >= startDate && r.Requestdate <= endDate)
+                    .Select(r => r.Recipe)
+                    .ToListAsync();
+            return View(requests); 
+        }
+
+        // GET: Users/Edit/5
+        //public async Task<IActionResult> EditProfile(decimal? id)
+        //{
+        //    if (id == null || _context.Users == null)
+        //    {
+        //        return NotFound();
+        //    }
+
+        //    var user = await _context.Users.FindAsync(id);
+        //    if (user == null)
+        //    {
+        //        return NotFound();
+        //    }
+        //    ViewData["RoleId"] = new SelectList(_context.Roles, "Roleid", "Roleid", user.RoleId);
+        //    return View(user);
+        //}
+
+        // POST: Users/Edit/5
+
+        //[HttpPost]
+        //[ValidateAntiForgeryToken]
+        //public async Task<IActionResult> EditProfile(decimal id, [Bind("Id,Firstname,Lastname,Birthdate,RoleId,Imgpath")] User user)
+        //{
+        //    if (id != user.Id)
+        //    {
+        //        return NotFound();
+        //    }
+
+        //    if (ModelState.IsValid)
+        //    {
+        //        try
+        //        {
+        //            _context.Update(user);
+        //            await _context.SaveChangesAsync();
+        //        }
+        //        catch (DbUpdateConcurrencyException)
+        //        {
+        //            if (!UserExists(user.Id))
+        //            {
+        //                return NotFound();
+        //            }
+        //            else
+        //            {
+        //                throw;
+        //            }
+        //        }
+        //        return RedirectToAction(nameof(Index));
+        //    }
+        //    ViewData["RoleId"] = new SelectList(_context.Roles, "Roleid", "Roleid", user.RoleId);
+        //    return View(user);
+        //}
+
+        // GET: Users/ProfileDetails/5
+        //public async Task<IActionResult> ProfileDetails(decimal? id)
+        //{
+        //    if (id == null || _context.Users == null)
+        //    {
+        //        return NotFound();
+        //    }
+
+        //    var user = await _context.Users
+        //        .Include(u => u.Role)
+        //        .FirstOrDefaultAsync(m => m.Id == id);
+        //    if (user == null)
+        //    {
+        //        return NotFound();
+        //    }
+
+        //    return View(user);
+        //}
+
+        public IActionResult Search() 
+        {
+            var result = _context.Recipes
+                .Include(x => x.Category)
+                .Include(x => x.User)
+                .ToList();
+            return View(result);
+        }
+
+        [HttpPost]
+        public IActionResult Search(DateTime? startDate, DateTime? endDate,string? name) { 
+            
+            var result =_context.Recipes.Include(x=>x.Category).Include(x=>x.User).ToList();
+
+            if (startDate != null)
+                result = result.Where(x => x.Creationdate >= startDate).ToList();
+            
+            if (endDate != null)
+                result = result.Where(x => x.Creationdate <= endDate).ToList();
+            
+            if (!String.IsNullOrEmpty(name))
+                result = result.Where(x => x.Name.ToLower().Contains(name.ToLower())).ToList();
+
+            return View(result);
+        }
+
+
         //GET : contactus 
         public async Task<ActionResult> ContactUs()
         {
             var contact =_context.Contactus.ToListAsync();
             return View(await contact);
         }
-        public IActionResult Index()
+        public async Task<IActionResult> Index()
         {
             var id = HttpContext.Session.GetInt32("adminSession");//=>5
 
@@ -39,17 +159,64 @@ namespace Recipe_Blog.Controllers
             ViewBag.recipePendingdCount = _context.Recipes.Where(x => x.RecipeStatus.Statusname == "Pending").Count();
             ViewBag.recipeRejectedCount = _context.Recipes.Where(x => x.RecipeStatus.Statusname == "Rejected").Count();
             ViewBag.CategoriesCount = _context.Categories.Count();
-            
 
-            return View();
+            ViewBag.requests = _context.Requests.ToListAsync();
+
+            ViewBag.totalIncome = _context.Requests.Sum(x=>x.Tax);
+            ViewBag.totalSales = _context.Requests.Include(x=>x.Recipe).Sum(x=>x.Recipe.Price);
+
+            var r=await _context.Requests
+                .Include(x=>x.User)
+                .Include(x => x.User.Role)
+                .Include(x => x.Recipe)
+                .Include(x => x.Recipe.Category)
+                .Include(x=>x.Recipe.User)
+                .ToListAsync();
+            return View(r);
         }
+        public async Task<IActionResult> Reports() {
+
+            var r = await _context.Requests
+                .Include(x => x.User)
+                .Include(x => x.User.Role)
+                .Include(x => x.Recipe)
+                .Include(x => x.Recipe.Category)
+                .Include(x => x.Recipe.User)
+                .ToListAsync();
+            return View(r);
+        }
+
+
         // GET: Recipes
         public async Task<IActionResult> Recipes()
         {
             return _context.Recipes != null ?
-                        View(await _context.Recipes.Include(u => u.Category).Include(u => u.User).Include(u => u.Comments).ToListAsync()) :
+                        View(await _context.Recipes
+                        .Include(u => u.Category)
+                        .Include(u => u.User)
+                        .Include(u => u.Comments)
+                        .OrderBy(u => u.RecipeStatusId)
+                        .ToListAsync()) :
                         Problem("Entity set 'ModelContext.Categories'  is null.");
         }
+        [HttpPost]
+        public async Task<IActionResult> Recipes(DateTime? startDate, DateTime? endDate, string? name)
+        {
+            var result = _context.Recipes.Include(x => x.Category).Include(x => x.User).ToList();
+
+            if (startDate != null)
+                result = result.Where(x => x.Creationdate >= startDate).ToList();
+
+            if (endDate != null)
+                result = result.Where(x => x.Creationdate <= endDate).ToList();
+
+            if (!String.IsNullOrEmpty(name))
+                result = result.Where(x => x.Name.ToLower().Contains(name.ToLower())).ToList();
+
+            return View(result);
+        }
+
+
         // GET: EditRecipe
         public async Task<IActionResult> EditRecipes(decimal? id)
         {
@@ -107,6 +274,44 @@ namespace Recipe_Blog.Controllers
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
+        
+        public async Task<IActionResult> AcceptRecipe(decimal? id)
+        {
+
+            if (id == null||_context.Recipes == null)
+            {
+                return NotFound();
+            }
+            var recipe = await _context.Recipes.FindAsync(id);
+            if (recipe != null)
+            {
+                recipe.RecipeStatusId = 2;
+                _context.Recipes.Update(recipe);
+                await _context.SaveChangesAsync();
+
+            }
+            return RedirectToAction(nameof(Recipes));
+        }
+
+      
+        public async Task<IActionResult> RejectRecipe(decimal? id)
+        {
+            if (id == null||_context.Recipes == null)
+            {
+                return NotFound();
+            }
+            var recipe = await _context.Recipes.FindAsync(id);
+            if (recipe != null)
+            {
+                recipe.RecipeStatusId = 3;
+                _context.Recipes.Update(recipe);
+                await _context.SaveChangesAsync();
+            }
+            return RedirectToAction(nameof(Recipes));
+
+        }
+
+
         //GET: CreateCategory
         public IActionResult CreateCategory() 
         {
@@ -255,112 +460,308 @@ namespace Recipe_Blog.Controllers
 
             return View(modelContext);
         }
-        public IActionResult Profile(decimal _id)
-        {
-            Login l = _context.Logins.Include(x => x.User).SingleOrDefault(u => u.User.Id == _id);
-            return View(l);
-        }
-        [HttpPost]
-        public IActionResult Profile(decimal _id, [Bind("Firstname,Lastname,Gender")] User user)
-        {
-            if (ModelState.IsValid)
-            {
-                user = _context.Users.SingleOrDefault(u => u.Id == _id);
-                _context.Update(user);
-                _context.SaveChangesAsync();
-                return RedirectToAction("Index");
-            }
+        //public IActionResult Profile1(decimal _id)
+        //{
+        //    var a = _context.Users.Include(x => x.Logins).SingleOrDefault(u => u.Id == _id);
+        //    return View(a);
+        //}
+        //[HttpPost]
+        //public IActionResult Profile1(decimal _id, User user)
+        //{
+        //    if (ModelState.IsValid)
+        //    {
+        //        user = _context.Users.SingleOrDefault(u => u.Id == _id);
+        //        _context.Update(user);
+        //        _context.SaveChangesAsync();
+        //        return RedirectToAction("Index");
+        //    }
 
-            return View(user);
-        }
+        //    return View(user);
+        //}
         //GET : ChefDetails
         public async Task<IActionResult> ChefDetails(decimal? id)
         {
-            var modelContext = _context.Users
-                .Include(r => r.Recipes)
-                .Include(r => r.Logins)
-                .Where(r => r.Id == id).SingleOrDefaultAsync();
-            return View(await modelContext);
+            var model =_context.Logins
+                .Include(r => r.User)
+                .Include(r => r.User.Recipes)
+                .Where(r => r.User.Id == id)
+                .SingleOrDefaultAsync();
+            //var modelContext = _context.Users
+            //    .Include(r => r.Recipes)
+            //    .Include(r => r.Logins)
+            //    .Where(r => r.Id == id).SingleOrDefaultAsync();
+            return View(await model);
         }
         //GET : ChefDetails
         public async Task<IActionResult> UserDetails(decimal? id)
         {
-            var modelContext = _context.Users
-                .Include(r => r.Testimonials)
-                .Include(r => r.Requests)
-                .Include(r => r.Logins)
-                .Where(r => r.Id == id).SingleOrDefaultAsync();
-            return View(await modelContext);
+            var model = _context.Logins
+                .Include(r => r.User)
+                .Include(r => r.User.Requests)
+                .Include(r => r.User.Recipes)
+                .Include(r => r.User.Testimonials)
+                .Where(r => r.User.Id == id)
+                .SingleOrDefaultAsync();
+            return View(await model);
+
         }
         // GET: UserController/PendingTestimonials
-        public async Task<ActionResult> PendingTestimonials()
+        //public async Task<ActionResult> PendingTestimonials()
+        //{
+        //    var model = _context.Testimonials
+        //        .Include(x=>x.User)
+        //        .ToListAsync();
+        //    return View(await model);
+        //}// GET: UserController/AcceptedTestimonials
+        //public async Task<ActionResult> AcceptedTestimonials()
+        //{
+        //    var model = _context.Testimonials.Include(u => u.TestimonialStatus)
+        //        .Where(u => u.TestimonialStatus.Statusname == "Accepted")
+        //        .ToListAsync();
+        //    return View(await model);
+        //}
+        //// GET: UserController/RejectedTestimonials
+        //public async Task<ActionResult> RejectedTestimonials()
+        //{
+        //    var model = _context.Testimonials.Include(u => u.TestimonialStatus)
+        //        .Where(u => u.TestimonialStatus.Statusname == "Rejected")
+        //        .ToListAsync();
+        //    return View(await model);
+        //}
+
+        //GET : UserController/AcceptTestimonial
+        
+        public async Task<IActionResult> AcceptTestimonial(decimal id)
         {
-            var model = _context.Testimonials
-                .Where(u => u.TestimonialStatus.Statusname == "Pending")
-                .ToListAsync();
-            return View(await model);
-        }// GET: UserController/AcceptedTestimonials
-        public async Task<ActionResult> AcceptedTestimonials()
-        {
-            var model = _context.Testimonials.Include(u => u.TestimonialStatus)
-                .Where(u => u.TestimonialStatus.Statusname == "Accepted")
-                .ToListAsync();
-            return View(await model);
-        }
-        // GET: UserController/RejectedTestimonials
-        public async Task<ActionResult> RejectedTestimonials()
-        {
-            var model = _context.Testimonials.Include(u => u.TestimonialStatus)
-                .Where(u => u.TestimonialStatus.Statusname == "Rejected")
-                .ToListAsync();
-            return View(await model);
-        }
-        [HttpPost]
-        public async Task<ActionResult> AcceptTestimonial(decimal? id, [Bind("Id,TestimonialStatusId")]Testimonial t)
-        {
-            if (ModelState.IsValid)
+
+            if (id == null||_context.Testimonials == null)
             {
-                _context.Update(t);
+                return NotFound();
+            }
+            var testimonial = await _context.Testimonials.FindAsync(id);
+            if (testimonial != null)
+            {
+                testimonial.TestimonialStatusId = 2;
+                _context.Testimonials.Update(testimonial);
+                await _context.SaveChangesAsync();
+
+            }
+            return RedirectToAction("PendingTestimonials", "admin");
+        }
+
+        //GET : UserController/RejectTestimonial
+        
+        public async Task<IActionResult> RejectTestimonial(decimal? id)
+        {
+            if (id == null||_context.Testimonials == null)
+            {
+                return NotFound();
+            }
+            var testimonial = await _context.Testimonials.FindAsync(id);
+            if (testimonial != null)
+            {
+                testimonial.TestimonialStatusId = 3;
+                _context.Testimonials.Update(testimonial);
                 await _context.SaveChangesAsync();
             }
-            return RedirectToAction(nameof(PendingTestimonials));
+            return RedirectToAction("PendingTestimonials", "admin");
         }
-        [HttpPost]
-        public async Task<ActionResult> RejectTestimonial()
+        private bool UserExists(decimal id)
         {
-            var model = _context.Testimonials.Include(u => u.TestimonialStatus)
-                .Where(u => u.TestimonialStatus.Statusname == "Rejected")
-                .ToListAsync();
-            return View(await model);
+            return (_context.Users?.Any(e => e.Id == id)).GetValueOrDefault();
+        
         }
-        // GET: EditTesti
-        public async Task<IActionResult> EditTestimonial(decimal? id)
+
+
+
+        // GET: Users/Edit/5
+        public async Task<IActionResult> EditProfile(decimal? id)
         {
-            return _context.Testimonials != null ?
-                        View(await _context.Testimonials
-                        .SingleOrDefaultAsync(u => u.Id == id)) :
-                        Problem("Entity set 'ModelContext.Categories'  is null.");
+            if (id == null || _context.Users == null)
+            {
+                return NotFound();
+            }
+
+            var user = await _context.Users.FindAsync(id);
+            if (user == null)
+            {
+                return NotFound();
+            }
+            ViewData["RoleId"] = new SelectList(_context.Roles, "Roleid", "Roleid", user.RoleId);
+            return View(user);
         }
+
+        // POST: Users/Edit/5
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> EditTestimonial(decimal id, [Bind("Id,TestimonialStatusId")] Testimonial t)
+        public async Task<IActionResult> EditProfile(decimal id, [Bind("Id,Firstname,Lastname,Birthdate,RoleId,Imgpath")] User user)
         {
-            if (id != t.Id)
+            if (id != user.Id)
             {
                 return NotFound();
             }
 
             if (ModelState.IsValid)
             {
-                    _context.Update(t);
+                try
+                {
+                    _context.Update(user);
                     await _context.SaveChangesAsync();
-                
+                }
+                catch (DbUpdateConcurrencyException)
+                {
+                    if (!UserExists(user.Id))
+                    {
+                        return NotFound();
+                    }
+                    else
+                    {
+                        throw;
+                    }
+                }
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["tata"] = new SelectList(_context.Statuses, "Statusid", "Statusname", t.TestimonialStatusId);
-            return View(t);
+            ViewData["RoleId"] = new SelectList(_context.Roles, "Roleid", "Roleid", user.RoleId);
+            return View(user);
         }
-      
+
+
+        // GET: Users/EditAccount/5
+        public async Task<IActionResult> EditAccount(decimal? id)
+        {
+            if (id == null || _context.Logins == null)
+            {
+                return NotFound();
+            }
+
+            var user = await _context.Logins.FindAsync(id);
+            if (user == null)
+            {
+                return NotFound();
+            }
+
+            return View(user);
+        }
+
+        // POST: Users/EditAccount/5
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> EditAccount(decimal id, [Bind("Id,Email,UserName,Password,UserId")] Login login)
+        {
+            if (id != login.Id)
+            {
+                return NotFound();
+            }
+
+            if (ModelState.IsValid)
+            {
+                try
+                {
+                    _context.Update(login);
+                    await _context.SaveChangesAsync();
+                }
+                catch (DbUpdateConcurrencyException)
+                {
+                    if (!UserExists(login.Id))
+                    {
+                        return NotFound();
+                    }
+                    else
+                    {
+                        throw;
+                    }
+                }
+                return RedirectToAction(nameof(Index));
+            }
+            return View(login);
+        }
+
+        // GET: Users/ProfileDetails/5
+        public async Task<IActionResult> ProfileDetails(decimal? id)
+        {
+            if (id == null || _context.Users == null)
+            {
+                return NotFound();
+            }
+
+            var user = await _context.Users
+                .Include(u => u.Role)
+                .FirstOrDefaultAsync(m => m.Id == id);
+            if (user == null)
+            {
+                return NotFound();
+            }
+
+            return View(user);
+        }
+        // GET: Users/AccountDetails/5
+        public async Task<IActionResult> AccountDetails(decimal? id)
+        {
+            if (id == null || _context.Logins == null)
+            {
+                return NotFound();
+            }
+
+            var login = await _context.Logins
+                .FirstOrDefaultAsync(m => m.UserId == id);
+            if (login == null)
+            {
+                return NotFound();
+            }
+
+            return View(login);
+        }
+
+
+
+        //[HttpPost]
+        //public async Task<ActionResult> AcceptTestimonial(decimal? id, [Bind("Id,TestimonialStatusId")]Testimonial t)
+        //{
+        //    if (ModelState.IsValid)
+        //    {
+        //        _context.Update(t);
+        //        await _context.SaveChangesAsync();
+        //    }
+        //    return RedirectToAction(nameof(PendingTestimonials));
+        //}
+        //[HttpPost]
+        //public async Task<ActionResult> RejectTestimonial()
+        //{
+        //    var model = _context.Testimonials.Include(u => u.TestimonialStatus)
+        //        .Where(u => u.TestimonialStatus.Statusname == "Rejected")
+        //        .ToListAsync();
+        //    return View(await model);
+        //}
+        // GET: EditTesti
+        //public async Task<IActionResult> EditTestimonial(decimal? id)
+        //{
+        //    return _context.Testimonials != null ?
+        //                View(await _context.Testimonials
+        //                .SingleOrDefaultAsync(u => u.Id == id)) :
+        //                Problem("Entity set 'ModelContext.Categories'  is null.");
+        //}
+
+        //[HttpPost]
+        //[ValidateAntiForgeryToken]
+        //public async Task<IActionResult> EditTestimonial(decimal id, [Bind("Id,TestimonialStatusId")] Testimonial t)
+        //{
+        //    if (id != t.Id)
+        //    {
+        //        return NotFound();
+        //    }
+
+        //    if (ModelState.IsValid)
+        //    {
+        //            _context.Update(t);
+        //            await _context.SaveChangesAsync();
+
+        //        return RedirectToAction(nameof(Index));
+        //    }
+        //    ViewData["tata"] = new SelectList(_context.Statuses, "Statusid", "Statusname", t.TestimonialStatusId);
+        //    return View(t);
+        //}
+
     }
 }

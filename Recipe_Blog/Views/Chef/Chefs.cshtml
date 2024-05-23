@@ -1,0 +1,76 @@
+﻿@model IEnumerable<Recipe_Blog.Models.User>
+
+@{
+    ViewData["Title"] = "Chefs";
+    Layout = "~/Views/Shared/_ChefLayout.cshtml";
+}
+
+<h2 class="mx-5">Chefs</h2>
+
+
+<div class="row row-cols-1 row-cols-md-3 g-4">
+  
+    @foreach (var item in Model)
+    {
+        <div class="col-4">
+            <div class="card h-100">
+                <img src="~/User/img/chef.png" class=" m-3" alt="Chef Image">
+                <div class="card-body">
+                    <h5 class="card-title">Name: @item.Firstname @item.Lastname</h5>
+                    <p class="card-text">Recipes: @item.Recipes.Count()</p>
+                    <p class="card-text">Birthdate: @item.Birthdate</p>
+                    <a asp-action="ChefDetails" asp-route-id="@item.Id" class="btn btn-primary">View Recipes</a>
+                </div>
+            </div>
+        </div>
+    }
+
+</div>
+
+
+
+
+
+
+@* 
+<table class="table mx-5">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.Firstname)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Lastname)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Birthdate)
+            </th>
+            
+            <th>
+                @Html.DisplayNameFor(model => model.Role)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model) {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.Firstname)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Lastname)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Birthdate)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Role.Rolename)
+            </td>
+            <td>
+                <a asp-action="ChefDetails" asp-route-id="@item.Id">View Chef</a>
+            </td>
+        </tr>
+}
+    </tbody>
+</table> *@

@@ -1,0 +1,21 @@
+﻿@model Aboutu
+
+@{
+    ViewData["Title"] = "aboutus";
+    Layout = "~/Views/Shared/_UserLayout.cshtml";
+}
+<div class="section-title">
+    <h2>About @Model.AboutCreator</h2>
+</div>
+
+<div class="row justify-content-evenly ">
+
+    <img src="~/User/img/@Model.Ingpath" class="w-50 m-5 col-5" />
+    <div class="col-5 align-items-center d-flex"><h2>@Model.AboutusContent</h2></div>
+</div>
+
+
+
+
+
+

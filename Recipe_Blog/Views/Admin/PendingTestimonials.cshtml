@@ -5,8 +5,67 @@
     Layout = "~/Views/Shared/_AdminLayout.cshtml";
 }
 
-<h1>Pending Testimonials</h1>
+<h1>Testimonials</h1>
 
+<div class="row">
+    <div class="col-12 col-lg-12">
+        <div class="card">
+            <div class="card-header">
+                Recipes
+                <div class="card-action">
+                </div>
+            </div>
+            <div class="table-responsive">
+                <table class="table align-items-center table-flush table-borderless">
+                    <thead>
+                        <tr>
+                           @*  <th>Image</th> *@
+                            <th>User</th>
+                            <th>Content</th>
+                           @*  <th>Price</th> *@
+                            <th>Posted At</th>
+                            <th>Status</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var x in Model)
+                        {
+                            <tr>
+                               @*  <td><img src="~/User/@x.Imgpath" class="product-img" alt="recope img"></td> *@
+                                <td>@x.User.Firstname</td>
+                                <td>@x.Content</td>
+                                @* <td>$ @x.Price</td> *@
+                                <td>@x.Creationdate</td>
+                                @switch (x.TestimonialStatusId)
+                                {
+                                    case 1:
+                                        <td>Pending</td>
+                                        break;
+                                    case 2:
+                                        <td>Accepted</td>
+                                        break;
+                                    case 3:
+                                        <td>Rejected</td>
+                                        break;
+                                }
+                                <td>
+                                    <div >
+                                        <a class="btn btn-info col-6" asp-action="AcceptTestimonial" asp-route-id="@x.Id">Accept</a>
+                                        <a class="btn btn-danger col-6" asp-action="RejectTestimonial" asp-route-id="@x.Id">Reject</a>
+                                    </div>
+                                </td>
+                            </tr>
+
+                        }
+
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div><!--End Row-->
+
+@* 
 
 <table class="table">
     <thead>
@@ -36,10 +95,11 @@
                     @Html.DisplayFor(modelItem => item.User.Firstname)
             </td>
             <td>
-                    <a asp-action="EditTestimonial" asp-route-id="@item.Id" class="btn btn-primary">Accept</a> 
+                    <a asp-action="AcceptTestimonial" asp-route-id="@item.Id" class="btn btn-primary">Accept</a>
                     <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-danger">Reject</a>
             </td>
         </tr>
 }
     </tbody>
 </table>
+ *@

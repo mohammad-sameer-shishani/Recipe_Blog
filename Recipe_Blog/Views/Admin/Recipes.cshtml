@@ -7,57 +7,84 @@
 
 <h3>Recipes</h3>
 
-<table class="table">
-    <thead>
-        <tr>
-            <th>
-                @Html.DisplayNameFor(model => model.Price)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Description)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Creationdate)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Name)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Category)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.User)
-            </th>
-            <th></th>
-        </tr>
-    </thead>
-    <tbody>
-@foreach (var item in Model) {
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.Price)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Description)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Creationdate)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Name)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Category.Id)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.User.Id)
-            </td>
-            <td>
-                    <a asp-action="EditRecipe" asp-route-id="@item.Id">Edit</a> |
-                    <a asp-action="RecipeDetails" asp-route-id="@item.Id">Details</a> |
-                    <a asp-action="RecipeDelete" asp-route-id="@item.Id">Delete</a>
-            </td>
-        </tr>
-}
-    </tbody>
-</table>
+
+<div class="row">
+    <div class="col-12 col-lg-12">
+        <div class="card">
+            <div class="card-header ">
+                <div>
+                    <form class="col-12" asp-action="Recipes" method="post">
+                        <div class="row">
+                            <div class="col">
+                                <span>From Date:</span>
+                                <input type="date" name="startDate" class="form-control input-shadow" class="rounded col" />
+                            </div>
+                            <div class="col">
+
+                                <span>To Date:</span>
+                                <input type="date" name="endDate" class="form-control input-shadow" class="rounded col" />
+                            </div>
+                            <div class="col">
+
+                                <span>Search By Name :</span>
+                                <input type="text" name="name" class="form-control input-shadow" class="rounded col" placeholder="Enter Name" />
+                            </div>
+
+                            <input type="submit" value="Search" class="btn btn-success rounded" />
+                        </div>
+                    </form>
+                </div>
+
+            </div>
+            <div class="table-responsive">
+                <table class="table align-items-center table-flush table-borderless">
+                    <thead>
+                        <tr>
+                            <th>Image</th>
+                            <th>Recipe Name</th>
+                            <th>Category</th>
+                            <th>Price</th>
+                            <th>Posted At</th>
+                            <th>Status</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var x in Model)
+                        {
+                            <tr>
+                                <td><img src="~/User/@x.Imgpath" class="product-img" alt="recope img"></td>
+                                <td>@x.Name</td>
+                                <td>@x.Category.Name</td>
+                                <td>$ @x.Price</td>
+                                <td>@x.Creationdate</td>
+                                @switch (x.RecipeStatusId)
+                                {
+                                   case 1:
+                                    <td>Pending</td>
+                                        break;
+                                   case 2:
+                                    <td>Accepted</td>
+                                        break;
+                                   case 3:
+                                    <td>Rejected</td>
+                                        break;
+                                }
+                               
+                                <td>
+                                    <div>
+                                        <a class="btn btn-primary col-12 mb-1 d-block" asp-action="RecipeDetails" asp-route-id="@x.Id">Details </a>
+                                        <a class="btn btn-info col-6 " asp-action="AcceptRecipe" asp-route-id="@x.Id">Accept</a>
+                                        <a class="btn btn-danger col-6 " asp-action="RejectRecipe" asp-route-id="@x.Id">Reject</a>
+
+                                    </div>
+                                </td>
+                            </tr>
+
+                        }
+
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div><!--End Row-->

@@ -1,0 +1,52 @@
+﻿@model PaymentViewModel
+
+@{
+    ViewData["Title"] = "Card";
+    Layout = "~/Views/Shared/_UserLayout.cshtml";
+
+    Recipe recipe = ViewBag.RecipeCard;
+}
+<div class="row text-center">
+    <h2>Insert Your Card Info</h2>
+</div>
+<hr />
+<div class="row m-5">
+    <div class="col-md-4 m-5">
+        <form asp-action="Card">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <input name="RecipeId" class="form-control d-none" value="@recipe.Id" />
+            <div class="form-group">
+                <label asp-for="CardId" class="control-label"></label>
+                <input asp-for="CardId" class="form-control" />
+                <span asp-validation-for="CardId" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Cvc" class="control-label"></label>
+                <input asp-for="Cvc" class="form-control" />
+                <span asp-validation-for="Cvc" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Fullname" class="control-label"></label>
+                <input asp-for="Fullname" class="form-control" />
+                <span asp-validation-for="Fullname" class="text-danger"></span>
+            </div>
+           
+          
+            <div class="form-group ">
+                <label asp-for="Expiredate" class="control-label"></label>
+                <input asp-for="Expiredate" class="form-control"/>
+                <span asp-validation-for="Expiredate" class="text-danger"></span>
+            </div>
+            <div class="form-group row ">
+                <input type="submit"  class="btn btn-primary col mx-3" />
+
+                <div class="col">
+                    <a asp-action="Index" class="btn btn-info">Back to List</a>
+                </div>
+            </div>
+
+        </form>
+    </div>
+</div>
+
+

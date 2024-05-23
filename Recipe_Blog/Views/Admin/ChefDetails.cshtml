@@ -1,36 +1,53 @@
-﻿@model Recipe_Blog.Models.User
+﻿@model Recipe_Blog.Models.Login
 
 @{
     ViewData["Title"] = "ChefDetails";
     Layout = "~/Views/Shared/_AdminLayout.cshtml";
 }
-<h3 class="mx-5">Chef @Model.Firstname Details</h3>
+@* <h3 class="mx-5">Chef @Model.User.Firstname Details</h3>
+ *@
 
 
+<div class="col-5 ">
+    <div class="card h-50">
+        <img class=" m-4" src="~/User/img/chef.png" class="card-img-top" alt="Chef Image">
+        <div class="card-body">
+            <h5 class="card-title">Name: @Model.User.Firstname @Model.User.Lastname</h5>
+            <h5 class="card-title">UserName: @Model.UserName </h5>
+            <h5 class="card-title">Email: @Model.Email </h5>
+            <p class="card-text">Recipes: @Model.User.Recipes.Count()</p>
+            <p class="card-text">Birthdate: @(Model.User.Birthdate)</p>
+        </div>
+    </div>
+</div>
+<div class="mx-1">
+    <a class="btn btn-primary mx-1" asp-action="RegisteredChefs">Back to Chefs</a>
+</div>
 
-<div class="m-5">
-    <div class="card mb-3 col-8">
-        <div class="row g-0">
-            <div class="row col-md-12">
-                <img src="~/User/img/chef.png" class="col-6 rounded-5" alt="Recipe Image">
-            </div>
-            <div class="col-md-12">
-                <div class="card-body">
-                    <h3 class="card-title"><strong>First Name :</strong> @Model.Firstname </h3>
-                    <h3 class="card-title"><strong>Last Name : </strong>@Model.Lastname</h3>
-                    <h3 class="card-title"><strong>Recipes: </strong>@Model.Recipes.Count() </h3>
-                    @if (Model.Birthdate != null)
-                    {
-                        <p class="card-text"><small class="text-body-secondary">Birthdate : @Model.Birthdate</small></p>
-                    }
+<hr />
+<h4 class="mx-5">@Model.User.Firstname Recipes</h4>
+<div class="row ">
+    @foreach (var item in Model.User.Recipes)
+    {
+
+        <div class="card m-3" style="max-width: 540px;">
+            <div class="row g-0">
+                <div class="col-md-4">
+                    <img src="~/User/@item.Imgpath" class="img-fluid rounded-start" alt="Recipe Image">
                 </div>
-                <div class="row justify-content-end align-items-end">
-                    <a asp-action="Index" class="col-12 ">
-                        <h5 class="col-3 shadow m-3 btn btn-primary">Go Back</h5>
-                    </a>
+                <div class="col-md-8">
+                    <div class="card-body">
+                        <h5 class="card-title">Recipe : @item.Name </h5>
+                        <p class="card-text">@item.Description.</p>
+                        <p class="card-text"><small class="text-body-secondary">Posted At : @item.Creationdate</small></p>
+                        <p class="card-text">Price: $@item.Price</p>
+
+                    </div>
+
                 </div>
             </div>
         </div>
-    </div>
 
+    }
 </div>
+

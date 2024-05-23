@@ -1,5 +1,7 @@
 ﻿
 @model Contactu
+@using Microsoft.AspNetCore.Http
+@inject IHttpContextAccessor accessor;
 @{
     ViewData["Title"] = "ContactUs";
     Layout = "~/Views/Shared/_UserLayout.cshtml";
@@ -137,13 +139,13 @@
         <form asp-action="ContactUs">
             <div class="row">
                 <div class="col-lg-4 col-md-4">
-                    <label asp-for="Username"></label>
-                    <input type="text" asp-for="Username" placeholder="First Name and Last Name">
+                    <label asp-for="Username"></label> 
+                    <input type="text" asp-for="Username" placeholder="First Name and Last Name" required>
                     <span asp-validation-for="Username"></span>
                 </div>
                 <div class="col-lg-4 col-md-4">
                     <label asp-for="Useremail"></label>
-                    <input type="email" asp-for="Useremail" placeholder="Example@gmail.com">
+                    <input type="email" asp-for="Useremail" placeholder="Example@gmail.com" required>
                     <span asp-validation-for="Useremail"></span>
                 </div>
                 <div class="col-lg-4 col-md-4">
@@ -154,7 +156,9 @@
                 <div class="col-lg-12 text-center">
                     <label  asp-for="Message"></label>
                     <textarea asp-for="Message" placeholder="Your message"></textarea>
-                    <button type="submit"  class="site-btn">SEND MESSAGE</button>
+                   
+                        <button type="submit" class="site-btn rounded">SEND MESSAGE</button>
+                  
                 </div>
             </div>
         </form>

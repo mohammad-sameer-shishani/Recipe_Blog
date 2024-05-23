@@ -1,0 +1,43 @@
+﻿@model Recipe_Blog.Models.User
+
+@{
+    ViewData["Title"] = "ProfileDetails";
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+}
+<section class="featured spad">
+    <div class="container ">
+        <div class="row ">
+            <div class="col-lg-12">
+                <div class="text-center">
+                    <h2>My Profile</h2>
+                </div>
+                <div class="row justify-content-center rounded-5 ">
+                    <div class="col-5 justify-content-center"><img src="~/User/img/man-default.png" class="col "></img></div>
+                    <div class="col-8 row justify-content-center">
+                        <a class="btn btn-primary col-4 m-3 shadow" asp-action="EditProfile" asp-route-id="@Model.Id">Edit Profile</a>
+                    </div>
+
+                    <div class="col-8 mb-3 row border rounded shadow">
+                        <label asp-for="Firstname" class="col-sm-2 col-form-label"><b>First name:</b></label>
+                        <div class="col-sm-10">
+                            <input type="text" readonly class="form-control-plaintext" asp-for="Firstname">
+                        </div>
+                    </div>
+                    <div class="col-8 mb-3 row border rounded shadow">
+                        <label asp-for="Lastname" class="col-sm-2 col-form-label"><b>Last name:</b></label>
+                        <div class="col-sm-10">
+                            <input type="text" readonly class="form-control-plaintext" asp-for="Lastname">
+                        </div>
+                    </div>
+                    <div class="col-8 mb-3 row border rounded shadow">
+                        <label asp-for="Birthdate" class="col-sm-2 col-form-label"><b>Birthdate:</b></label>
+                        <div class="col-sm-10">
+                            <input type="date" readonly class="form-control-plaintext" asp-for="Birthdate">
+                        </div>
+                    </div>
+               </div>
+            </div>
+        </div>
+    </div>
+</section>
+

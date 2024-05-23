@@ -5,18 +5,18 @@
     Layout = "~/Views/Shared/_UserLayout.cshtml";
 }
 
-<h3 class="mx-5">Category Details</h3>
+<h3 class="mx-5">@Model.Name Recipes</h3>
 
 <div class="m-5">
     <hr />
     <dl class="row">
-        <dt class = "col-sm-2" a>
+        @* <dt class = "col-sm-2" a>
             @Html.DisplayNameFor(model => model.Name)
         </dt>
         <dd class = "col-sm-10">
             @Html.DisplayFor(model => model.Name)
-        </dd>@* 
-        <img src="~/User/img/shishani_recipe-removebg-preview.png" class="card-img-top" alt="..."> *@
+        </dd>@*  *@
+        <img src="~/User/img/shishani_recipe-removebg-preview.png" class="card-img-top" alt="..."> 
         @if (Model.Recipes != null)
             @foreach(var i in Model.Recipes.Where(u=>u.CategoryId==Model.Id))
             {
@@ -26,8 +26,8 @@
                         <h5 class="card-title"><strong>Recipe: </strong>@i.Name</h5>
                     </div>
                     <ul class="list-group list-group-flush">
-                        <li class="list-group-item"><strong>Chef : </strong>Chef : @i.Name</li>
-                        <li class="list-group-item"><strong>Price: </strong>$@i.Price</li>
+                        <li class="list-group-item"><strong>Chef : </strong>@i.Name</li>
+                        @* <li class="list-group-item"><strong>Price: </strong>$@i.Price</li> *@
                         <li class="list-group-item"><strong>Category: </strong>@i.Category.Name</li>
                     </ul>
                         <h5 class="card-text mx-3"><strong>Description: </strong>@i.Description</h5>

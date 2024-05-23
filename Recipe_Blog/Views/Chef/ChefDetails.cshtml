@@ -1,0 +1,52 @@
+﻿@model Recipe_Blog.Models.User
+
+@{
+    ViewData["Title"] = "ChefDetails";
+    Layout = "~/Views/Shared/_ChefLayout.cshtml";
+}
+
+<div class="col-5 ">
+    <div class="card h-50">
+        <img class=" m-4" src="~/User/img/chef.png" class="card-img-top" alt="Chef Image">
+        <div class="card-body">
+            <h5 class="card-title">Name: @Model.Firstname @Model.Lastname</h5>
+            <p class="card-text">Recipes: @Model.Recipes.Count()</p>
+            <p class="card-text">Birthdate: @Model.Birthdate</p>
+        </div>
+    </div>
+</div>
+<div class="mx-1">
+    <a class="btn btn-primary" asp-action="Chefs">Back to Chefs</a>
+</div>
+
+<hr/>
+<h4 class="mx-5">@Model.Firstname Recipes</h4>
+<div class="row ">
+@foreach (var item in Model.Recipes)
+{
+
+        <div class="card m-3" style="max-width: 540px;">
+            <div class="row g-0">
+                <div class="col-md-4">
+                    <img src="~/User/@item.Imgpath" class="img-fluid rounded-start" alt="Recipe Image">
+                </div>
+                <div class="col-md-8">
+                    <div class="card-body">
+                        <h5 class="card-title">Recipe : @item.Name </h5>
+                        <p class="card-text">@item.Description.</p>
+                        <p class="card-text"><small class="text-body-secondary">Posted At : @item.Creationdate</small></p>
+                        <p class="card-text">Price: $@item.Price</p>
+                        
+                    </div>
+                    
+                </div>
+            </div>
+        </div>
+
+
+
+
+
+
+}
+</div>

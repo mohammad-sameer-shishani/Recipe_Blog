@@ -1,37 +1,31 @@
-﻿@model User
+﻿@model Login
 
 @{
     ViewData["Title"] = "UserDetails";
     Layout = "~/Views/Shared/_AdminLayout.cshtml";
 }
-
+@* 
 <h3 class="mx-5">@Model.Firstname Details</h3>
+ *@
 
 
-
-<div class="m-5">
-    <div class="card mb-3 col-8" >
-        <div class="row g-0">
-            <div class="row col-md-12">
-                <img src="~/User/img/man-default.png" class="col-6 rounded-5" alt="Recipe Image">
-            </div> 
-            <div class="col-md-12">
-                <div class="card-body">
-                    <h3 class="card-title"><strong>First Name :</strong> @Model.Firstname </h3>
-                    <h3 class="card-title"><strong>Last Name : </strong>@Model.Lastname</h3>
-                    <h3 class="card-title"><strong>Testimonials: </strong>@Model.Testimonials.Count() </h3>
-                    @if (Model.Birthdate!=null)
-                    {
-                        <p class="card-text"><small class="text-body-secondary">Birthdate : @Model.Birthdate</small></p>
-                    }
-                </div>
-                <div class="row justify-content-end align-items-end">
-                    <a asp-action="Index" class="col-12 ">
-                        <h5 class="col-3 shadow m-3 btn btn-primary">Go Back</h5>
-                    </a>
-                </div>
-            </div>
+<div class="col-5 ">
+    <div class="card h-50">
+        <img class=" m-4" src="~/User/img/man-default.png" class="card-img-top" alt="Chef Image">
+        <div class="card-body">
+            <h5 class="card-title">Name: @Model.User.Firstname @Model.User.Lastname</h5>
+            <h5 class="card-title">UserName: @Model.UserName </h5>
+            <h5 class="card-title">Email: @Model.Email </h5>
+            <p class="card-text">Testimonials: @Model.User.Testimonials.Count()</p>
+            <p class="card-text">Orders: @Model.User.Requests.Count()</p>
+            @if (Model.User.Birthdate != null){
+            <p class="card-text">Birthdate: @(Model.User.Birthdate)</p>
+            }
         </div>
     </div>
-
 </div>
+<div class="mx-1">
+    <a class="btn btn-primary mx-1" asp-action="RegisteredUsers">Back to Users</a>
+</div>
+
+

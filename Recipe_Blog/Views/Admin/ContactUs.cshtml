@@ -9,10 +9,13 @@
 
 @foreach (var item in Model)
 {
-    <div class="m-3 border border-1 rounded p-2">
-        <div class="row "><h6 class="col">Name: @item.Username</h6>|<h6 class="col">Email: @item.Useremail</h6>|<h6 class="col">Subject: @item.Subject</h6></div>
-        <hr/>
-        <div ><h5 class="w-100 ">Message: @item.Message </h5></div>
+    <div class="card border border-info col-4 mx-5" >
+        <div class="card-body">
+            <h5 class="card-title">Subject: @item.Subject</h5>
+            <h6 class="card-subtitle mb-2 text-body-secondary">User: @item.Username</h6>
+            <p class="card-text">Message: @item.Message</p>
+            <a class="card-link">Email: @item.Useremail</a>
+        </div>
     </div>
 }
 

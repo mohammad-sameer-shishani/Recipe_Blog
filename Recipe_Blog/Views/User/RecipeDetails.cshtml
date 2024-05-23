@@ -1,22 +1,22 @@
-﻿@model Recipe_Blog.Models.Recipe
+﻿@model Recipe
 
 @{
     ViewData["Title"] = "RecipeDetails";
     Layout = "~/Views/Shared/_UserLayout.cshtml";
 }
 
-<h2 class="m-5"><strong>Recipe Details</strong></h2>
+<h2 class="m-5"><strong>@Model.Name Details</strong></h2>
 
-    <div class="m-5">
-        <div class="card mb-3 " style="max-width: 500px;">
+    <div class="m-5 ">
+    <div class="card mb-3 bg bg-light shadow " style="max-width: 500px;">
             <div class="row g-0">
                 <div class="col-md-12">
                 <img src="~/User/@Model.Imgpath" class=" rounded-5" alt="Recipe Image">
                 </div>
                 <div class="col-md-12">
                     <div class="card-body">
-                    <h3 class="card-title"><strong>Recipe :</strong> @Model.Name </h3>
-                    <h4 class="card-title"><strong>By : </strong>@Model.User.Firstname</h4>
+                    // <h3 class="card-title"><strong>Recipe :</strong> @Model.Name </h3>
+                    // <h4 class="card-title"><strong>By : </strong>@Model.User.Firstname</h4>
                     <p class="card-text"><h5><strong>Description: </strong></h5> Lorem Ipsum is simply  when an unknown ake a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum. </p>
                         <p class="card-text"><small class="text-body-secondary">Posted At : @Model.Creationdate</small></p>
                     </div>
@@ -24,7 +24,7 @@
                     <a asp-action="Index" class="col-6 justify-content-end">
                         <h5 class="col-10 shadow m-3 btn btn-outline-secondary">Go Back</h5>
                         </a>
-                    <a asp-action="Checkout" asp-controller="User" asp-route-id="@Model.Id" class="col-6 justify-content-end">
+                    <a asp-action="card" asp-controller="User" asp-route-Id="@Model.Id" class="col-6 justify-content-end">
                         <h5 class="col-10 shadow m-3 btn btn-primary">Buy Now: $@Model.Price</h5>
                         </a>
                 </div>

@@ -1,7 +1,11 @@
-﻿@{
+﻿@using Microsoft.AspNetCore.Http
+@inject ModelContext _context;
+@inject IHttpContextAccessor accessor;
+@{
     
-    User chef = ViewBag.thisChef; 
-    Login login = ViewBag.thisChefLogin;
+    var id = accessor.HttpContext.Session.GetInt32("chefSession");
+    User? chef = _context.Users.SingleOrDefault(x => x.Id == id);
+    Login login = _context.Logins.SingleOrDefault(x => x.UserId == id); ;
 }
 <!DOCTYPE html>
 <html lang="en">
@@ -42,7 +46,7 @@
         <div id="sidebar-wrapper" data-simplebar="" data-simplebar-auto-hide="true">
             <div class="brand-logo">
                 <a asp-action="Index">
-                    <img src="~/admin/images/logo-icon.png" class="logo-icon" alt="logo icon">
+                    <img src="~/User/img/shishani_recipe-transformed.jpeg" style="border-radius:50%" class="logo-icon" alt="logo icon">
                     <h5 class="logo-text">Welcome Chef</h5>
                 </a>
             </div>
@@ -55,14 +59,18 @@
                 </li> 
 
                 <li>
-                    <a asp-action="Profile">
-                        <i class="zmdi zmdi-face"></i> <span>Profile</span>
+                    <a asp-action="ProfileDetails" asp-route-id="@id">
+                        <i class="zmdi zmdi-face"></i> <span>My Profile</span>
                     </a>
                 </li>
-
                 <li>
-                    <a asp-action="index">
-                        <i class="zmdi zmdi-format-list-bulleted"></i> <span>All Recipes</span>
+                    <a asp-action="AccountDetails" asp-route-id="@id">
+                        <i class="zmdi zmdi-account-box"></i> <span>Account</span>
+                    </a>
+                </li>
+                <li>
+                     <a asp-action="Create">
+                    <i class="zmdi zmdi-format-list-bulleted"></i> <span>Add Recipe</span>
                     </a>
                 </li>
                 <li>
@@ -70,16 +78,21 @@
                         <i class="zmdi zmdi-format-list-bulleted"></i> <span>My Recipes</span>
                     </a>
                 </li>
+                <li>
+                    <a asp-action="AllRecipes">
+                        <i class="zmdi zmdi-format-list-bulleted"></i> <span>All Recipes</span>
+                    </a>
+                </li>
 
                 <li>
-                    <a href="forms">
+                    <a asp-action="Categories">
                         <i class="zmdi zmdi-format-list-bulleted"></i> <span>Categories</span>
                     </a>
                 </li>
 
                 <li>
-                    <a asp-action="">
-                        <i class="zmdi zmdi-grid"></i> <span>Tables</span>
+                    <a asp-action="Chefs">
+                        <i class="zmdi zmdi-accounts"></i> <span>Chefs</span>
                     </a>
                 </li>
 
@@ -122,13 +135,13 @@
                  
                     <li class="nav-item">
                         <a class="nav-link dropdown-toggle dropdown-toggle-nocaret" data-toggle="dropdown" href="#">
-                            <span class="user-profile"><img src="https://via.placeholder.com/110x110" class="img-circle" alt="user avatar"></span>
+                            <span class="user-profile"><img src="~/User/img/chef.png" class="img-circle" alt="user avatar"></span>
                         </a>
                         <ul class="dropdown-menu dropdown-menu-right">
                             <li class="dropdown-item user-details">
                                 <a href="javaScript:void();">
                                     <div class="media">
-                                        <div class="avatar"><img class="align-self-start mr-3" src="https://via.placeholder.com/110x110" alt="user avatar"></div>
+                                        <div class="avatar"><img class="align-self-start mr-3" src="~/User/img/chef.png" alt="user avatar"></div>
                                         <div class="media-body">
                                             <h6 class="mt-2 user-title">Chef : @chef.Firstname</h6>
                                             <p class="user-subtitle">@login.Email</p>

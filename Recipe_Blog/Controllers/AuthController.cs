@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using Recipe_Blog.Models;
+using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
 
 namespace Recipe_Blog.Controllers
 {
@@ -112,8 +113,22 @@ namespace Recipe_Blog.Controllers
                 login.UserId = userViewModel.UserId;
 				await _context.AddAsync(login);
 				await _context.SaveChangesAsync();
+
+
+
+				Visa visa = new Visa {
+					UserId = userViewModel.UserId,
+					Nameoncard = userViewModel.Firstname + userViewModel.Lastname,
+					Amount = 1000,
+					Cardnumber = 12341234,
+                    Expdate = "1103",
+					Cvc = 111,
+                };
+                await _context.AddAsync(visa);
+                await _context.SaveChangesAsync();
                 return RedirectToAction("Login", "Auth");
             }
+
             return View();
             
         }

@@ -23,8 +23,6 @@ public partial class ModelContext : DbContext
 
     public virtual DbSet<Contactu> Contactus { get; set; }
 
-    public virtual DbSet<Gender> Genders { get; set; }
-
     public virtual DbSet<Homepage> Homepages { get; set; }
 
     public virtual DbSet<Login> Logins { get; set; }
@@ -151,22 +149,6 @@ public partial class ModelContext : DbContext
                 .HasMaxLength(50)
                 .IsUnicode(false)
                 .HasColumnName("USERNAME");
-        });
-
-        modelBuilder.Entity<Gender>(entity =>
-        {
-            entity.HasKey(e => e.Genderid).HasName("SYS_C008704");
-
-            entity.ToTable("GENDER");
-
-            entity.Property(e => e.Genderid)
-                .ValueGeneratedOnAdd()
-                .HasColumnType("NUMBER")
-                .HasColumnName("GENDERID");
-            entity.Property(e => e.Name)
-                .HasMaxLength(50)
-                .IsUnicode(false)
-                .HasColumnName("NAME");
         });
 
         modelBuilder.Entity<Homepage>(entity =>
@@ -322,7 +304,7 @@ public partial class ModelContext : DbContext
                 .HasColumnType("TIMESTAMP(6) WITH TIME ZONE")
                 .HasColumnName("REQUESTDATE");
             entity.Property(e => e.Tax)
-                .HasColumnType("NUMBER")
+                .HasColumnType("FLOAT")
                 .HasColumnName("TAX");
             entity.Property(e => e.UserId)
                 .HasColumnType("NUMBER")
@@ -426,9 +408,6 @@ public partial class ModelContext : DbContext
                 .HasMaxLength(50)
                 .IsUnicode(false)
                 .HasColumnName("FIRSTNAME");
-            entity.Property(e => e.GenderId)
-                .HasColumnType("NUMBER")
-                .HasColumnName("GENDER_ID");
             entity.Property(e => e.Imgpath)
                 .HasMaxLength(150)
                 .IsUnicode(false)
@@ -440,11 +419,6 @@ public partial class ModelContext : DbContext
             entity.Property(e => e.RoleId)
                 .HasColumnType("NUMBER")
                 .HasColumnName("ROLE_ID");
-
-            entity.HasOne(d => d.Gender).WithMany(p => p.Users)
-                .HasForeignKey(d => d.GenderId)
-                .OnDelete(DeleteBehavior.SetNull)
-                .HasConstraintName("USERS_FK2");
 
             entity.HasOne(d => d.Role).WithMany(p => p.Users)
                 .HasForeignKey(d => d.RoleId)
@@ -485,17 +459,9 @@ public partial class ModelContext : DbContext
                 .HasMaxLength(50)
                 .IsUnicode(false)
                 .HasColumnName("NAMEONCARD");
-            entity.Property(e => e.RequestId)
-                .HasColumnType("NUMBER")
-                .HasColumnName("REQUEST_ID");
             entity.Property(e => e.UserId)
                 .HasColumnType("NUMBER")
                 .HasColumnName("USER_ID");
-
-            entity.HasOne(d => d.Request).WithMany(p => p.Visas)
-                .HasForeignKey(d => d.RequestId)
-                .OnDelete(DeleteBehavior.SetNull)
-                .HasConstraintName("REQUEST__FK");
 
             entity.HasOne(d => d.User).WithMany(p => p.Visas)
                 .HasForeignKey(d => d.UserId)

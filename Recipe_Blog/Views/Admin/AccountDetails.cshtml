@@ -1,0 +1,41 @@
+﻿@model Login
+@{
+    ViewData["Title"] = "AccountDetails";
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+}
+<section class="featured spad">
+    <div class="container ">
+        <div class="row ">
+            <div class="col-lg-12">
+                <div class="text-center">
+                    <h2>My Account</h2>
+                </div>
+                <div class="row justify-content-center  rounded-5 ">
+                    <div class="col-6  justify-content-center"><img src="~/User/img/man-default.png" class="col-12"></img></div>
+                    <div class="col-8 row justify-content-center">
+                        <a class="btn btn-primary col-4 m-3 shadow" asp-action="EditAccount" asp-route-id="@Model.Id">Edit Account</a>
+                    </div>
+
+                    <div class="col-8 mb-3 row border rounded shadow">
+                        <label asp-for="UserName" class="col-sm-2 col-form-label"><b>UserName:</b></label>
+                        <div class="col-sm-10">
+                            <input type="text" readonly class="form-control-plaintext " asp-for="UserName">
+                        </div>
+                    </div>
+                    <div class="col-8 mb-3 row border rounded shadow">
+                        <label asp-for="Email" class="col-sm-2 col-form-label"><b>Email:</b></label>
+                        <div class="col-sm-10">
+                            <input type="text" readonly class="form-control-plaintext" asp-for="Email">
+                        </div>
+                    </div>
+                    <div class="col-8 mb-3 row border rounded d-none">
+                        <label asp-for="Password" class="col-sm-2 col-form-label"><b>Password:</b></label>
+                        <div class="col-sm-10">
+                            <input type="password" readonly class="form-control-plaintext" asp-for="Password">
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>

@@ -5,12 +5,35 @@
     Layout = "~/Views/Shared/_ChefLayout.cshtml";
 }
 
-<h1>MyRecipes</h1>
+<h1 class="mx-5">My Recipes</h1>
 
-<p>
-    <a asp-action="Create">Add Recipe</a>
-</p>
-<table class="table">
+<div class="card-header ">
+    <div>
+        <form class="col-12" asp-action="MyRecipes" method="post">
+            <div class="row">
+                <div class="col">
+                    <span>From Date:</span>
+                    <input type="date" name="startDate" class="form-control input-shadow" class="rounded col" />
+                </div>
+                <div class="col">
+
+                    <span>To Date:</span>
+                    <input type="date" name="endDate" class="form-control input-shadow" class="rounded col" />
+                </div>
+                <div class="col">
+
+                    <span>Search By Name :</span>
+                    <input type="text" name="name" class="form-control input-shadow" class="rounded col" placeholder="Enter Name" />
+                </div>
+
+                <input type="submit" value="Search" class="btn btn-success rounded" />
+            </div>
+
+        </form>
+    </div>
+
+</div>
+<table class="mx-5 table">
     <thead>
         <tr>
             <th>
@@ -22,16 +45,14 @@
             <th>
                 @Html.DisplayNameFor(model => model.Name)
             </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Description)
-            </th>
+         
 
             <th>
                 @Html.DisplayNameFor(model => model.Price)
             </th>
 
             <th>
-                @Html.DisplayNameFor(model => model.Creationdate)
+                Status
             </th>
 
 
@@ -52,16 +73,38 @@
                 <td>
                     @Html.DisplayFor(modelItem => item.Name)
                 </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Description)
-                </td>
+               
                 <td>
                     @Html.DisplayFor(modelItem => item.Price)
                 </td>
 
-                <td>
-                    @Html.DisplayFor(modelItem => item.Creationdate)
-                </td>
+                    @switch (item.RecipeStatusId)
+                    {
+                    case 1:
+                        <td>
+                            Pending
+                        </td>
+                            break;
+
+                        case 2:
+
+                        <td>
+                            Accepted
+                        </td>
+                            break;
+
+                        case 3:
+
+                        <td>
+                            Rejected
+                        </td>
+                            break;
+                            default:
+                        <td>
+                            Pending
+                        </td>
+                        break;
+                    }
 
             <td>
                 <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |

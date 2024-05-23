@@ -1,0 +1,90 @@
+﻿@model IEnumerable<Recipe>
+
+@{
+    ViewData["Title"] = "Index";
+    Layout = "~/Views/Shared/_ChefLayout.cshtml";
+}
+
+<h1 class="mx-5">All Recipes</h1>
+
+<div class="card-header ">
+    <div>
+        <form class="col-12" asp-action="AllRecipes" method="post">
+            <div class="row">
+                <div class="col">
+                    <span>From Date:</span>
+                    <input type="date" name="startDate" class="form-control input-shadow" class="rounded col" />
+                </div>
+                <div class="col">
+
+                    <span>To Date:</span>
+                    <input type="date" name="endDate" class="form-control input-shadow" class="rounded col" />
+                </div>
+                <div class="col">
+
+                    <span>Search By Name :</span>
+                    <input type="text" name="name" class="form-control input-shadow" class="rounded col" placeholder="Enter Name" />
+                </div>
+
+                <input type="submit" value="Search"  class="btn btn-success rounded" />
+            </div>
+
+        </form>
+    </div>
+
+</div>
+<table class="mx-5 table">
+    <thead>
+        <tr>
+            <th>
+                Chef
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Category)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Name)
+            </th>
+           
+            
+            <th>
+                @Html.DisplayNameFor(model => model.Price)
+            </th>
+       
+            <th>
+                @Html.DisplayNameFor(model => model.Creationdate)
+            </th>
+         
+            
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model) {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.User.Firstname)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Category.Name)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Name)
+                </td>
+             
+            <td>
+                @Html.DisplayFor(modelItem => item.Price)
+            </td>
+            
+            <td>
+                @Html.DisplayFor(modelItem => item.Creationdate)
+            </td>
+            
+            
+            <td>
+                <a asp-action="alldetails" asp-controller="chef" asp-route-id="@item.Id">Details</a>
+            </td>
+        </tr>
+}
+    </tbody>
+</table>

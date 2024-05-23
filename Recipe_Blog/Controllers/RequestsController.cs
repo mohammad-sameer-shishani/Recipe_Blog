@@ -48,19 +48,16 @@ namespace Recipe_Blog.Controllers
         }
 
         // GET: Requests/Create
-        public IActionResult Create()
+        public IActionResult Create(decimal? id)
         {
-
-
-
-
-
-
-
-
-            return View();
+            if (id == null || _context.Visas.ToList()==null)
+            {
+                NotFound();
+            }
+            var visa=_context.Visas.Where(x => x.UserId == id).SingleOrDefault();
+            return View(visa);
         }
-
+        
         // POST: Requests/Create
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
@@ -79,11 +76,11 @@ namespace Recipe_Blog.Controllers
             //ViewData["RecipeId"] = new SelectList(_context.Recipes, "Id", "Id", request.RecipeId);
             //ViewData["UserId"] = new SelectList(_context.Users, "Id", "Id", request.UserId);
             foreach (var i in userData.Visas) {
-                if (i.Amount < purchase.Amount)
-                {
-                    ModelState.AddModelError("", "you dont have a money");
-                    return View(purchase);
-                }
+                //if (i.Amount < purchase.Amount)
+                //{
+                //    ModelState.AddModelError("", "you dont have a money");
+                //    return View(purchase);
+                //}
                 if (i.Cardnumber != purchase.Cardnumber)
                 {
                     ModelState.AddModelError("", "your card number is invalid");

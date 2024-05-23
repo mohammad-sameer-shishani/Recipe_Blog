@@ -1,0 +1,74 @@
+﻿@{
+	Layout = "~/Views/Shared/_AdminLayout.cshtml";
+}
+
+<div class="row">
+    <div class="col-12 col-lg-12">
+        <div class="card">
+            <div class="card-header">
+                Search for Recipes <div>
+                    <form class="col-12" asp-action="Search" method="post">
+                       <div> <input type="date" name="startDate" class="rounded col-3"/>
+                            <input type="date" name="endDate" class="rounded col-3" />
+                            <input type="text" name="name"  class="rounded col-3" />
+                            <input type="submit" value="Search" class="btn btn-success rounded" />
+                        </div>
+                        
+                    </form>
+                </div>
+                
+            </div>
+            <div class="table-responsive">
+                <table class="table align-items-center table-flush table-borderless">
+                    <thead>
+                        <tr>
+                            <th>Image</th>
+                            <th>Recipe Name</th>
+                            <th>Category</th>
+                            <th>Price</th>
+                            <th>Posted At</th>
+                            <th>Status</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var x in Model)
+                        {
+                            <tr>
+                                <td><img src="~/User/@x.Imgpath" class="product-img" alt="recope img"></td>
+                                <td>@x.Name</td>
+                                <td>@x.Category.Name</td>
+                                <td>$ @x.Price</td>
+                                <td>@x.Creationdate</td>
+                                @switch (x.RecipeStatusId)
+                                {
+                                    case 1:
+                                        <td>Pending</td>
+                                        break;
+                                    case 2:
+                                        <td>Accepted</td>
+                                        break;
+                                    case 3:
+                                        <td>Rejected</td>
+                                        break;
+                                }
+                                <td>
+                                    <div>
+                                        <a class="btn btn-primary col-12 mb-1 d-block" asp-action="RecipeDetails" asp-route-id="@x.Id">Details </a>
+                                            <a class="btn btn-info col-6 " asp-action="AcceptRecipe" asp-route-id="@x.Id">Accept</a>
+                                            <a class="btn btn-danger col-6 " asp-action="RejectRecipe" asp-route-id="@x.Id">Reject</a>
+                                        
+                                    </div>
+                                </td>
+                            </tr>
+
+                        }
+
+
+                       
+
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div><!--End Row-->

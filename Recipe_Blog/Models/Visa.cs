@@ -17,11 +17,7 @@ public partial class Visa
 
     public decimal? UserId { get; set; }
 
-    public decimal? RequestId { get; set; }
-
     public string? Expdate { get; set; }
-
-    public virtual Request? Request { get; set; }
 
     public virtual User? User { get; set; }
 }

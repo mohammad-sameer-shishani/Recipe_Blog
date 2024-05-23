@@ -1,4 +1,4 @@
-﻿@model User
+﻿@model IEnumerable<Request>
 @{
     Layout = "~/Views/Shared/_AdminLayout.cshtml";
     User u= ViewBag.currentAdmin;
@@ -20,7 +20,16 @@
     double tap = (double)testimonialAccCount / (testimonialAccCount + testimonialPendCount + testimonialRejCount) * 100;
     double tpp = (double)testimonialRejCount / (testimonialAccCount + testimonialPendCount + testimonialRejCount) * 100;
     double trp = (double)testimonialRejCount / (testimonialAccCount + testimonialPendCount + testimonialRejCount) * 100;
+    var acceptedCount = ViewBag.recipeAcceptedCount??0;
+    var pendingCount = ViewBag.recipePendingCount??0;
+    var rejectedCount = ViewBag.recipeRejectedCount??0;
+    var totalIncome= ViewBag.totalIncome??0;
+    var totalSales= ViewBag.totalSales??0;
+    // Request requests = ViewBag.requests;
+   
 }
+<link href="https://cdn.datatables.net/1.11.1/css/jquery.dataTables.min.css" rel="stylesheet" />
+<link href="https://cdn.datatables.net/buttons/2.0.0/css/buttons.dataTables.min.css" rel="stylesheet" />
 
 
 <div class="container-fluid">
@@ -36,7 +45,7 @@
                         <div class="progress my-3" style="height:3px;">
                             <div class="progress-bar" style="width:@up%"></div>
                         </div>
-                        <p class="mb-0 text-white small-font">Registered Users<span class="float-right">@up% <i class="zmdi zmdi-long-arrow-up"></i></span></p>
+                        <p class="mb-0 text-white small-font">Registered Users<span class="float-right">@Convert.ToInt32(up)% <i class="zmdi zmdi-long-arrow-up"></i></span></p>
                     </div>
                 </div>
                 <div class="col-12 col-lg-6 col-xl-4 border-light">
@@ -45,7 +54,7 @@
                         <div class="progress my-3" style="height:3px;">
                             <div class="progress-bar" style="width:@cp%"></div>
                         </div>
-                        <p class="mb-0 text-white small-font">Registered Chefs<span class="float-right">@cp% <i class="zmdi zmdi-long-arrow-up"></i></span></p>
+                        <p class="mb-0 text-white small-font">Registered Chefs<span class="float-right">@Convert.ToInt32(cp)% <i class="zmdi zmdi-long-arrow-up"></i></span></p>
                     </div>
                 </div>
                 <div class="col-12 col-lg-6 col-xl-4 border-light">
@@ -63,7 +72,7 @@
                         <div class="progress my-3" style="height:3px;">
                             <div class="progress-bar" style="width:@tpp%"></div>
                         </div>
-                        <p class="mb-0 text-white small-font">Pending Testimonials<span class="float-right">@tpp% <i class="zmdi zmdi-long-arrow-up"></i></span></p>
+                        <p class="mb-0 text-white small-font">Pending Testimonials<span class="float-right">@Convert.ToInt32(tpp)% <i class="zmdi zmdi-long-arrow-up"></i></span></p>
                     </div>
                 </div>
                 <div class="col-12 col-lg-6 col-xl-4 border-light">
@@ -72,7 +81,7 @@
                         <div class="progress my-3" style="height:3px;">
                             <div class="progress-bar" style="width:@tap%"></div>
                         </div>
-                        <p class="mb-0 text-white small-font">Accepted Testimonials<span class="float-right">@tap% <i class="zmdi zmdi-long-arrow-up"></i></span></p>
+                        <p class="mb-0 text-white small-font">Accepted Testimonials<span class="float-right">@Convert.ToInt32(tap)% <i class="zmdi zmdi-long-arrow-up"></i></span></p>
                     </div>
                 </div>
                 <div class="col-12 col-lg-6 col-xl-4 border-light">
@@ -81,7 +90,7 @@
                         <div class="progress my-3" style="height:3px;">
                             <div class="progress-bar" style="width:@trp%"></div>
                         </div>
-                        <p class="mb-0 text-white small-font">Rejected Testimonials<span class="float-right">@trp% <i class="zmdi zmdi-long-arrow-up"></i></span></p>
+                        <p class="mb-0 text-white small-font">Rejected Testimonials<span class="float-right">@Convert.ToInt32(trp)% <i class="zmdi zmdi-long-arrow-up"></i></span></p>
                     </div>
                 </div>
                 <div class="col-12 col-lg-6 col-xl-4 border-light">
@@ -90,7 +99,7 @@
                         <div class="progress my-3" style="height:3px;">
                             <div class="progress-bar" style="width:@rpp%"></div>
                         </div>
-                        <p class="mb-0 text-white small-font">Pend recipes<span class="float-right">@rpp% <i class="zmdi zmdi-long-arrow-up"></i></span></p>
+                        <p class="mb-0 text-white small-font">Pend recipes<span class="float-right">@Convert.ToInt32(rpp)% <i class="zmdi zmdi-long-arrow-up"></i></span></p>
                     </div>
                 </div>
                 <div class="col-12 col-lg-6 col-xl-4 border-light">
@@ -99,7 +108,7 @@
                         <div class="progress my-3" style="height:3px;">
                             <div class="progress-bar" style="width:@rap%"></div>
                         </div>
-                        <p class="mb-0 text-white small-font">Accepted recipes<span class="float-right">@rap% <i class="zmdi zmdi-long-arrow-up"></i></span></p>
+                        <p class="mb-0 text-white small-font">Accepted recipes<span class="float-right">@Convert.ToInt32(rap)% <i class="zmdi zmdi-long-arrow-up"></i></span></p>
                     </div>
                 </div>
                 <div class="col-12 col-lg-6 col-xl-4 border-light">
@@ -108,122 +117,234 @@
                         <div class="progress my-3" style="height:3px;">
                             <div class="progress-bar" style="width:@rrp%"></div>
                         </div>
-                        <p class="mb-0 text-white small-font">Rejected recipes<span class="float-right">@rrp% <i class="zmdi zmdi-long-arrow-up"></i></span></p>
+                        <p class="mb-0 text-white small-font">Rejected recipes<span class="float-right">@Convert.ToInt32(rrp)% <i class="zmdi zmdi-long-arrow-up"></i></span></p>
                     </div>
                 </div>
             </div>
         </div>
     </div>
 
+  
+
     <div class="row">
-        <div class="col-12 col-lg-8 col-xl-8">
-            <div class="card">
-                <div class="card-header">
-                    Site Traffic
-                    <div class="card-action">
-                        <div class="dropdown">
-                            <a href="javascript:void();" class="dropdown-toggle dropdown-toggle-nocaret" data-toggle="dropdown">
-                                <i class="icon-options"></i>
-                            </a>
-                            <div class="dropdown-menu dropdown-menu-right">
-                                <a class="dropdown-item" href="javascript:void();">Action</a>
-                                <a class="dropdown-item" href="javascript:void();">Another action</a>
-                                <a class="dropdown-item" href="javascript:void();">Something else here</a>
-                                <div class="dropdown-divider"></div>
-                                <a class="dropdown-item" href="javascript:void();">Separated link</a>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="card-body">
-                    <ul class="list-inline">
-                        <li class="list-inline-item"><i class="fa fa-circle mr-2 text-white"></i>New Visitor</li>
-                        <li class="list-inline-item"><i class="fa fa-circle mr-2 text-light"></i>Old Visitor</li>
-                    </ul>
-                    <div class="chart-container-1">
-                        <canvas id="chart1"></canvas>
-                    </div>
-                </div>
-
-                <div class="row m-0 row-group text-center border-top border-light-3">
-                    <div class="col-12 col-lg-4">
-                        <div class="p-3">
-                            <h5 class="mb-0">45.87M</h5>
-                            <small class="mb-0">Overall Visitor <span> <i class="fa fa-arrow-up"></i> 2.43%</span></small>
-                        </div>
-                    </div>
-                    <div class="col-12 col-lg-4">
-                        <div class="p-3">
-                            <h5 class="mb-0">15:48</h5>
-                            <small class="mb-0">Visitor Duration <span> <i class="fa fa-arrow-up"></i> 12.65%</span></small>
-                        </div>
-                    </div>
-                    <div class="col-12 col-lg-4">
-                        <div class="p-3">
-                            <h5 class="mb-0">245.65</h5>
-                            <small class="mb-0">Pages/Visit <span> <i class="fa fa-arrow-up"></i> 5.62%</span></small>
-                        </div>
-                    </div>
-                </div>
-
-            </div>
-        </div>
+       
 
         <div class="col-12 col-lg-4 col-xl-4">
             <div class="card">
                 <div class="card-header">
-                    Weekly sales
-                    <div class="card-action">
-                        <div class="dropdown">
-                            <a href="javascript:void();" class="dropdown-toggle dropdown-toggle-nocaret" data-toggle="dropdown">
-                                <i class="icon-options"></i>
-                            </a>
-                            <div class="dropdown-menu dropdown-menu-right">
-                                <a class="dropdown-item" href="javascript:void();">Action</a>
-                                <a class="dropdown-item" href="javascript:void();">Another action</a>
-                                <a class="dropdown-item" href="javascript:void();">Something else here</a>
-                                <div class="dropdown-divider"></div>
-                                <a class="dropdown-item" href="javascript:void();">Separated link</a>
-                            </div>
-                        </div>
-                    </div>
+                   Accounts
                 </div>
                 <div class="card-body">
                     <div class="chart-container-2">
-                        <canvas id="chart2"></canvas>
+                        <div class="w-100"><canvas id="userRoleChart" width="200" height="200"></canvas></div>
                     </div>
                 </div>
                 <div class="table-responsive">
                     <table class="table align-items-center">
                         <tbody>
                             <tr>
-                                <td><i class="fa fa-circle text-white mr-2"></i> Direct</td>
-                                <td>$5856</td>
-                                <td>+55%</td>
+                                <td> Users</td>
+                                <td>@userCount</td>
+                                <td>+@Convert.ToInt32(up)%</td>
                             </tr>
                             <tr>
-                                <td><i class="fa fa-circle text-light-1 mr-2"></i>Affiliate</td>
-                                <td>$2602</td>
-                                <td>+25%</td>
+                                <td>Chefs</td>
+                                <td>@chefCount</td>
+                                <td>+@Convert.ToInt32(cp)%</td>
                             </tr>
-                            <tr>
-                                <td><i class="fa fa-circle text-light-2 mr-2"></i>E-mail</td>
-                                <td>$1802</td>
-                                <td>+15%</td>
-                            </tr>
-                            <tr>
-                                <td><i class="fa fa-circle text-light-3 mr-2"></i>Other</td>
-                                <td>$1105</td>
-                                <td>+5%</td>
-                            </tr>
+                           
                         </tbody>
                     </table>
                 </div>
             </div>
         </div>
+
+
+
+        <div class="col-12 col-lg-4 col-xl-4">
+            <div class="card">
+                <div class="card-header">
+                    Recipes 
+                </div>
+                <div class="card-body">
+                    <div class="chart-container-2">
+                        <div class="w-100"><canvas id="RecipeChart" width="200" height="200"></canvas></div>
+                    </div>
+                </div>
+                <div class="table-responsive">
+                    <table class="table align-items-center">
+                        <tbody>
+                            <tr>
+                                <td> Accepted Recipes</td>
+                                <td>@acceptedCount</td>
+                                <td>+@Convert.ToInt32(rap)%</td>
+                            </tr>
+                            <tr>
+                                <td>Rejected Recipes</td>
+                                <td>@rejectedCount</td>
+                                <td>+@Convert.ToInt32(rrp)%</td>
+                            </tr>
+                            <tr>
+                                <td>Pending Recipes</td>
+                                <td>@pendingCount</td>
+                                <td>+@Convert.ToInt32(rpp)%</td>
+                            </tr>
+                            
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-12 col-lg-4 col-xl-4">
+            <div class="card">
+                <div class="card-header">
+                    Incomings
+                </div>
+                <div class="card-body">
+                    <div class="chart-container-2">
+                        <div class="w-100"><canvas id="IChart" width="200" height="200"></canvas></div>
+                    </div>
+                </div>
+                <div class="table-responsive">
+                    <table class="table align-items-center">
+                        <tbody>
+                            <tr>
+                                <td> Total Incomes</td>
+                                <td>$@totalIncome</td>
+                                <td>+16%</td>
+                            </tr>
+                            <tr>
+                                <td>Total Sales</td>
+                                <td>$@totalSales</td>
+                                <td>+84%</td>
+                            </tr>
+
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+
     </div><!--End Row-->
 
-    <div class="row">
+    <script>
+        // Extract data from ViewBag
+        var userCount = @ViewBag.userCount;
+        var chefCount = @ViewBag.chefCount;
+
+        // Define data for the chart
+        var data = {
+            labels: ['Users', 'Chefs'],
+            datasets: [{
+                label: 'User Roles',
+                data: [userCount, chefCount],
+                backgroundColor: [
+                    'rgba(75, 192, 192, 0.5)',
+                    'rgba(255, 99, 132, 0.5)'
+                ],
+                borderColor: [
+                    'rgba(75, 192, 192, 1)',
+                    'rgba(255, 99, 132, 1)'
+                ],
+                borderWidth: 1
+            }]
+        };
+
+        // Configure chart options
+        var config = {
+            type: 'doughnut',
+            data: data,
+            options: {
+                responsive: true,
+                maintainAspectRatio: false
+            }
+        };
+
+        // Render the chart
+        var ctx = document.getElementById('userRoleChart').getContext('2d');
+        var myChart = new Chart(ctx, config);
+    </script>
+    <script>
+        // Extract data from ViewBag
+        var a = @acceptedCount;
+        var r = @rejectedCount;
+        var p = @pendingCount;
+
+        // Define data for the chart
+        var data = {
+            labels: ['Accepted Recipes', 'Rejected Recipes', 'Pending Recipes'],
+            datasets: [{
+                label: 'Recipes',
+                data: [a, r, p],
+                backgroundColor: [
+                    'rgba(75, 192, 192, 0.5)',
+                    'rgba(255, 99, 132, 0.5)',
+                    'rgba(173, 132, 153, 0.8)'
+                ],
+                borderColor: [
+                    'rgba(75, 192, 192, 1)',
+                    'rgba(255, 99, 132, 1)',
+                    'rgba(173, 132, 153, 1)'
+                ],
+                borderWidth: 1
+            }]
+        };
+
+        // Configure chart options
+        var config = {
+            type: 'doughnut',
+            data: data,
+            options: {
+                responsive: true,
+                maintainAspectRatio: false
+            }
+        };
+
+        // Render the chart
+        var ctx = document.getElementById('RecipeChart').getContext('2d');
+        var myChart = new Chart(ctx, config);
+    </script>
+    <script>
+        // Extract data from ViewBag
+        var i =  @ViewBag.totalIncome;
+        var s =  @ViewBag.totalSales ;
+                 
+        // Define data for the chart
+        var data = {
+            labels: ['Incomes', 'Sales'],
+            datasets: [{
+                label: 'Incoming',
+                data: [i, s],
+                backgroundColor: [
+                    'rgba(75, 192, 192, 0.5)',
+                    'rgba(255, 99, 132, 0.5)'
+                ],
+                borderColor: [
+                    'rgba(75, 192, 192, 1)',
+                    'rgba(255, 99, 132, 1)'
+                ],
+                borderWidth: 1
+            }]
+        };
+
+        // Configure chart options
+        var config = {
+            type: 'doughnut',
+            data: data,
+            options: {
+                responsive: true,
+                maintainAspectRatio: false
+            }
+        };
+
+        // Render the chart
+        var ctx = document.getElementById('IChart').getContext('2d');
+        var myChart = new Chart(ctx, config);
+    </script>
+
+  @*   <div class="row">
         <div class="col-12 col-lg-12">
             <div class="card">
                 <div class="card-header">
@@ -343,7 +464,14 @@
     <!--End Dashboard Content-->
     <!--start overlay-->
     <div class="overlay toggle-menu"></div>
-    <!--end overlay-->
+    <!--end overlay--> *@
 
 </div>
 <!-- End container-fluid-->
+<script src="https://code.jquery.com/jquery-3.5.1.js"></script>
+<script src="https://cdn.datatables.net/1.11.1/js/jquery.dataTables.min.js" defer></script>
+<script src="https://cdn.datatables.net/buttons/2.0.0/js/dataTables.buttons.min.js" defer></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.1.3/jszip.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.53/pdfmake.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.53/vfs_fonts.js"></script>
+<script src="https://cdn.datatables.net/buttons/2.0.0/js/buttons.html5.min.js" defer></script>

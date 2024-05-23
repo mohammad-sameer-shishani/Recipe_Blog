@@ -1,83 +1,95 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
+using Microsoft.EntityFrameworkCore;
+using Recipe_Blog.Models;
 
 namespace Recipe_Blog.Controllers
 {
     public class tempController : Controller
     {
-        // GET: tempController
-        public ActionResult Index()
+        private readonly ModelContext _context;
+
+        public tempController(ModelContext context)
         {
+            _context = context;
+        }
+
+        // GET: Users
+        public async Task<IActionResult> Index()
+        {
+            var modelContext = _context.Users.Include(u => u.Role);
+            return View(await modelContext.ToListAsync());
+        }
+
+     
+
+        // GET: Users/Create
+        public IActionResult Create()
+        {
+            ViewData["RoleId"] = new SelectList(_context.Roles, "Roleid", "Roleid");
             return View();
         }
 
-        // GET: tempController/Details/5
-        public ActionResult Details(int id)
-        {
-            return View();
-        }
-
-        // GET: tempController/Create
-        public ActionResult Create()
-        {
-            return View();
-        }
-
-        // POST: tempController/Create
+        // POST: Users/Create
+        // To protect from overposting attacks, enable the specific properties you want to bind to.
+        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Create(IFormCollection collection)
+        public async Task<IActionResult> Create([Bind("Id,Firstname,Lastname,Birthdate,RoleId,Imgpath")] User user)
         {
-            try
+            if (ModelState.IsValid)
             {
+                _context.Add(user);
+                await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
-            catch
-            {
-                return View();
-            }
+            ViewData["RoleId"] = new SelectList(_context.Roles, "Roleid", "Roleid", user.RoleId);
+            return View(user);
         }
 
-        // GET: tempController/Edit/5
-        public ActionResult Edit(int id)
+
+        // GET: Users/Delete/5
+        public async Task<IActionResult> Delete(decimal? id)
         {
-            return View();
+            if (id == null || _context.Users == null)
+            {
+                return NotFound();
+            }
+
+            var user = await _context.Users
+                .Include(u => u.Role)
+                .FirstOrDefaultAsync(m => m.Id == id);
+            if (user == null)
+            {
+                return NotFound();
+            }
+
+            return View(user);
         }
 
-        // POST: tempController/Edit/5
-        [HttpPost]
+        // POST: Users/Delete/5
+        [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
-        public ActionResult Edit(int id, IFormCollection collection)
+        public async Task<IActionResult> DeleteConfirmed(decimal id)
         {
-            try
+            if (_context.Users == null)
             {
-                return RedirectToAction(nameof(Index));
+                return Problem("Entity set 'ModelContext.Users'  is null.");
             }
-            catch
+            var user = await _context.Users.FindAsync(id);
+            if (user != null)
             {
-                return View();
+                _context.Users.Remove(user);
             }
+            
+            await _context.SaveChangesAsync();
+            return RedirectToAction(nameof(Index));
         }
 
-        // GET: tempController/Delete/5
-        public ActionResult Delete(int id)
-        {
-            return View();
-        }
-
-        // POST: tempController/Delete/5
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public ActionResult Delete(int id, IFormCollection collection)
-        {
-            try
-            {
-                return RedirectToAction(nameof(Index));
-            }
-            catch
-            {
-                return View();
-            }
-        }
+   
     }
 }

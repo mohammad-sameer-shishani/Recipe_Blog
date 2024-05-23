@@ -19,6 +19,103 @@ namespace Recipe_Blog.Controllers
             _context = context;
             
         }
+        public async Task<IActionResult> Index()
+        {
+
+            return View();
+        }
+        //// GET: Users/Edit/5
+        //public async Task<IActionResult> EditProfile(decimal? id)
+        //{
+        //    if (id == null || _context.Users == null)
+        //    {
+        //        return NotFound();
+        //    }
+
+        //    var user = await _context.Users.FindAsync(id);
+        //    if (user == null)
+        //    {
+        //        return NotFound();
+        //    }
+        //    ViewData["RoleId"] = new SelectList(_context.Roles, "Roleid", "Roleid", user.RoleId);
+        //    return View(user);
+        //}
+
+        //// POST: Users/Edit/5
+
+        //[HttpPost]
+        //[ValidateAntiForgeryToken]
+        //public async Task<IActionResult> EditProfile(decimal id, [Bind("Id,Firstname,Lastname,Birthdate,RoleId,Imgpath")] User user)
+        //{
+        //    if (id != user.Id)
+        //    {
+        //        return NotFound();
+        //    }
+
+        //    if (ModelState.IsValid)
+        //    {
+        //        try
+        //        {
+        //            _context.Update(user);
+        //            await _context.SaveChangesAsync();
+        //        }
+        //        catch (DbUpdateConcurrencyException)
+        //        {
+        //            if (!UserExists(user.Id))
+        //            {
+        //                return NotFound();
+        //            }
+        //            else
+        //            {
+        //                throw;
+        //            }
+        //        }
+        //        return RedirectToAction(nameof(Index));
+        //    }
+        //    ViewData["RoleId"] = new SelectList(_context.Roles, "Roleid", "Roleid", user.RoleId);
+        //    return View(user);
+        //}
+
+        //// GET: Users/ProfileDetails/5
+        //public async Task<IActionResult> ProfileDetails(decimal? id)
+        //{
+        //    if (id == null || _context.Users == null)
+        //    {
+        //        return NotFound();
+        //    }
+
+        //    var user = await _context.Users
+        //        .Include(u => u.Role)
+        //        .FirstOrDefaultAsync(m => m.Id == id);
+        //    if (user == null)
+        //    {
+        //        return NotFound();
+        //    }
+
+        //    return View(user);
+        //}
+
+        public async Task<IActionResult> Chefs() 
+        {
+            var chefs =_context.Users
+                .Include(c=>c.Recipes)
+                .Include(c => c.Logins)
+                .Where(c=>c.RoleId==2)
+                .ToList();
+            return View(chefs);
+        }
+
+        //GET : ChefDetails
+        public async Task<IActionResult> ChefDetails(decimal? id)
+        {
+            var modelContext = _context.Users
+                .Include(r => r.Recipes)
+                .Include(r => r.Logins)
+                .Include(r => r.Role)
+                .Where(r => r.Id == id).SingleOrDefaultAsync();
+            return View(await modelContext);
+        }
+
         public void GetChefLoginInfo(){
             var _id = HttpContext.Session.GetInt32("chefSession");
             var _chef = _context.Users
@@ -28,11 +125,36 @@ namespace Recipe_Blog.Controllers
             ViewBag.thisChefLogin = _context.Logins.SingleOrDefault(x => x.UserId == _id);
         }
         // GET: Recipes
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> AllRecipes()
         {
             GetChefLoginInfo();
-            var modelContext = _context.Recipes.Include(r => r.Category).Include(r => r.User).OrderBy(x => x.Creationdate);
+            var modelContext = _context.Recipes
+                .Include(r => r.Category)
+                .Include(r => r.User)
+                .OrderBy(x => x.Creationdate);
             return View(await modelContext.ToListAsync());
+        }
+        [HttpPost]
+        public async Task<IActionResult> AllRecipes(DateTime? startDate, DateTime? endDate, string? name)
+        {
+            GetChefLoginInfo();
+            var result = await _context.Recipes
+                .Include(r => r.Category)
+                .Include(r => r.User)
+                .OrderBy(x => x.Creationdate)
+                .ToListAsync();
+
+
+            if (startDate != null)
+                result = result.Where(x => x.Creationdate >= startDate).ToList();
+
+            if (endDate != null)
+                result = result.Where(x => x.Creationdate <= endDate).ToList();
+
+            if (!String.IsNullOrEmpty(name))
+                result = result.Where(x => x.Name.ToLower().Contains(name.ToLower())).ToList();
+
+            return View(result);
         }
         //GET: Chef 
         public async Task<IActionResult> MyRecipes()
@@ -46,7 +168,28 @@ namespace Recipe_Blog.Controllers
                 .OrderBy(x => x.Creationdate);
             return View(await modelContext.ToListAsync());
         }
+        [HttpPost]
+        public async Task<IActionResult> MyRecipes(DateTime? startDate, DateTime? endDate, string? name)
+        {
+            GetChefLoginInfo();
+            var result = await _context.Recipes
+                .Include(r => r.Category)
+                .Include(r => r.User)
+                .OrderBy(x => x.Creationdate)
+                .ToListAsync();
 
+
+            if (startDate != null)
+                result = result.Where(x => x.Creationdate >= startDate).ToList();
+
+            if (endDate != null)
+                result = result.Where(x => x.Creationdate <= endDate).ToList();
+
+            if (!String.IsNullOrEmpty(name))
+                result = result.Where(x => x.Name.ToLower().Contains(name.ToLower())).ToList();
+
+            return View(result);
+        }
         // GET: Chef/Details/5
         public async Task<IActionResult> AllDetails(decimal? id)
         {
@@ -100,14 +243,16 @@ namespace Recipe_Blog.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,Price,Description,Creationdate,Name,UserId,CategoryId,RecipeStatusId")] Recipe recipe)
+        public async Task<IActionResult> Create([Bind("Id,Price,Description,Creationdate,Name,UserId,CategoryId,RecipeStatusId,Instructions,Ingredients")] Recipe recipe)
         {
             
 
             if (ModelState.IsValid)
             {
                 var _id = Convert.ToDecimal(HttpContext.Session.GetInt32("chefSession"));
+                recipe.Imgpath = "shishani_recipe-removebg-preview.png";
                 recipe.UserId = _id;
+                recipe.RecipeStatusId = 1;
                 _context.Add(recipe);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
@@ -218,31 +363,182 @@ namespace Recipe_Blog.Controllers
         public async Task<IActionResult> Categories()
         {
             return _context.Categories != null ?
-                        View(await _context.Categories.ToListAsync()) :
+                        View(await _context.Categories.Include(x=>x.Recipes).ToListAsync()) :
                         Problem("Entity set 'ModelContext.Categories'  is null.");
         }
 
         // GET: ChefCategories/Details/5
-        public async Task<IActionResult> GategoryDetails(decimal? id)
+        public async Task<IActionResult> CategoryDetails(decimal? id)
         {
             if (id == null || _context.Categories == null)
             {
                 return NotFound();
             }
 
-            var category = await _context.Categories
-                .FirstOrDefaultAsync(m => m.Id == id);
-            if (category == null)
+            var Categories = await _context.Categories
+                .Include(x=>x.Recipes)
+                .Where(x=>x.Id==id)
+                .SingleOrDefaultAsync();
+            if (Categories == null)
             {
                 return NotFound();
             }
 
-            return View(category);
+            return View(Categories);
         }
+
+
+
+        // GET: Users/Edit/5
+        public async Task<IActionResult> EditProfile(decimal? id)
+        {
+            if (id == null || _context.Users == null)
+            {
+                return NotFound();
+            }
+
+            var user = await _context.Users.FindAsync(id);
+            if (user == null)
+            {
+                return NotFound();
+            }
+            ViewData["RoleId"] = new SelectList(_context.Roles, "Roleid", "Roleid", user.RoleId);
+            return View(user);
+        }
+
+        // POST: Users/Edit/5
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> EditProfile(decimal id, [Bind("Id,Firstname,Lastname,Birthdate,RoleId,Imgpath")] User user)
+        {
+            if (id != user.Id)
+            {
+                return NotFound();
+            }
+
+            if (ModelState.IsValid)
+            {
+                try
+                {
+                    _context.Update(user);
+                    await _context.SaveChangesAsync();
+                }
+                catch (DbUpdateConcurrencyException)
+                {
+                    if (!UserExists(user.Id))
+                    {
+                        return NotFound();
+                    }
+                    else
+                    {
+                        throw;
+                    }
+                }
+                return RedirectToAction(nameof(Index));
+            }
+            ViewData["RoleId"] = new SelectList(_context.Roles, "Roleid", "Roleid", user.RoleId);
+            return View(user);
+        }
+
+
+        // GET: Users/EditAccount/5
+        public async Task<IActionResult> EditAccount(decimal? id)
+        {
+            if (id == null || _context.Logins == null)
+            {
+                return NotFound();
+            }
+
+            var user = await _context.Logins.FindAsync(id);
+            if (user == null)
+            {
+                return NotFound();
+            }
+
+            return View(user);
+        }
+
+        // POST: Users/EditAccount/5
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> EditAccount(decimal id, [Bind("Id,Email,UserName,Password,UserId")] Login login)
+        {
+            if (id != login.Id)
+            {
+                return NotFound();
+            }
+
+            if (ModelState.IsValid)
+            {
+                try
+                {
+                    _context.Update(login);
+                    await _context.SaveChangesAsync();
+                }
+                catch (DbUpdateConcurrencyException)
+                {
+                    if (!UserExists(login.Id))
+                    {
+                        return NotFound();
+                    }
+                    else
+                    {
+                        throw;
+                    }
+                }
+                return RedirectToAction(nameof(Index));
+            }
+            return View(login);
+        }
+
+        // GET: Users/ProfileDetails/5
+        public async Task<IActionResult> ProfileDetails(decimal? id)
+        {
+            if (id == null || _context.Users == null)
+            {
+                return NotFound();
+            }
+
+            var user = await _context.Users
+                .Include(u => u.Role)
+                .FirstOrDefaultAsync(m => m.Id == id);
+            if (user == null)
+            {
+                return NotFound();
+            }
+
+            return View(user);
+        }
+        // GET: Users/AccountDetails/5
+        public async Task<IActionResult> AccountDetails(decimal? id)
+        {
+            if (id == null || _context.Logins == null)
+            {
+                return NotFound();
+            }
+
+            var login = await _context.Logins
+                .FirstOrDefaultAsync(m => m.UserId == id);
+            if (login == null)
+            {
+                return NotFound();
+            }
+
+            return View(login);
+        }
+
+
+
 
         private bool RecipeExists(decimal id)
         {
           return (_context.Recipes?.Any(e => e.Id == id)).GetValueOrDefault();
+        }
+        private bool UserExists(decimal id)
+        {
+            return (_context.Users?.Any(e => e.Id == id)).GetValueOrDefault();
         }
     }
 }

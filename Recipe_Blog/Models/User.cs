@@ -20,11 +20,7 @@ public partial class User
     [NotMapped]
     public IFormFile? ImageFile { get; set; }
 
-    public decimal? GenderId { get; set; }
-
     public virtual ICollection<Comment> Comments { get; set; } = new List<Comment>();
-
-    public virtual Gender? Gender { get; set; }
 
     public virtual ICollection<Login> Logins { get; set; } = new List<Login>();
 

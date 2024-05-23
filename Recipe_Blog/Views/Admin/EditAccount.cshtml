@@ -1,0 +1,61 @@
+﻿@model Recipe_Blog.Models.Login
+
+@{
+    ViewData["Title"] = "EditAccount";
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+}
+
+
+<hr />
+<div class="row justify-content-center">
+<div class="card col-10 col-lg-7 m-5">
+    <div class="card-body">
+        <div class="row text-center"><h2>Edit My Profile</h2></div>
+
+        <div class="tab-content p-3">
+            <div class="tab-pane active" id="edit">
+                <form asp-action="EditAccount">
+                    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                    <input type="hidden" asp-for="@Model.Id" />
+
+                    <div class="form-group row">
+                        <label class="col-lg-3 col-form-label form-control-label" asp-for="Email"></label>
+                        <div class="col-lg-9">
+                            <input class="form-control" asp-for="Email" class="form-control" />
+                            <span asp-validation-for="Email" class="text-danger"></span>
+                        </div>
+                    </div>
+
+                    <div class="form-group row">
+                        <label class="col-lg-3 col-form-label form-control-label" asp-for="UserName"></label>
+                        <div class="col-lg-9">
+                            <input asp-for="UserName" class="form-control" />
+                            <span asp-validation-for="UserName" class="text-danger"></span>
+                        </div>
+                    </div>
+
+
+                    <div class="form-group row">
+                        <label class="col-lg-3 col-form-label form-control-label" asp-for="Password"></label>
+                        <div class="col-lg-9">
+                            <input asp-for="Password" class="form-control" />
+                            <span asp-validation-for="Password" class="text-danger"></span>
+                        </div>
+                    </div>
+                    <input class="d-none" asp-for="UserId"/>
+                    <div class="form-group row">
+                        <label class="col-lg-3 col-form-label form-control-label"></label>
+                        <div class="col-lg-9">
+                            <a class="btn btn-secondary" asp-action="AccountDetails" asp-route-id="@Model.UserId">Cancel</a>
+                            <input type="submit" class="btn btn-primary" value="Save Changes">
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+</div>
+
+
+

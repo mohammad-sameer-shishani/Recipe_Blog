@@ -1,4 +1,5 @@
-$(function() {
+
+$(function () {
     "use strict";
 
      // chart 1
@@ -11,7 +12,7 @@ $(function() {
 					labels: ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct"],
 					datasets: [{
 						label: 'New Visitor',
-						data: [3, 3, 8, 5, 7, 4, 6, 4, 6, 3],
+						data: [3, 6, 8, 5, 7, 4, 6, 4, 6, 3],
 						backgroundColor: '#fff',
 						borderColor: "transparent",
 						pointRadius :"0",
@@ -63,43 +64,41 @@ $(function() {
 			 }
 			});  
 		
-		
-    // chart 2
-
-		var ctx = document.getElementById("chart2").getContext('2d');
-			var myChart = new Chart(ctx, {
-				type: 'doughnut',
-				data: {
-					labels: ["Direct", "Affiliate", "E-mail", "Other"],
-					datasets: [{
-						backgroundColor: [
-							"#ffffff",
-							"rgba(255, 255, 255, 0.70)",
-							"rgba(255, 255, 255, 0.50)",
-							"rgba(255, 255, 255, 0.20)"
-						],
-						data: [5856, 2602, 1802, 1105],
-						borderWidth: [0, 0, 0, 0]
-					}]
-				},
-			options: {
-				maintainAspectRatio: false,
-			   legend: {
-				 position :"bottom",	
-				 display: false,
-				    labels: {
-					  fontColor: '#ddd',  
-					  boxWidth:15
-				   }
+	// chart 2
+	var ctx = document.getElementById("chartSex").getContext('2d');
+	var myChart = new Chart(ctx, {
+		type: 'doughnut',
+		data: {
+			labels: ["Accepted111", "Pending", "Rejected"],
+			datasets: [{
+				backgroundColor: [
+					"#ffffff",
+					"rgba(255, 255, 255, 0.70)",
+					"rgba(255, 255, 255, 0.50)"
+				],
+				data: [
+					acceptedCount,
+					pendingCount,
+					rejectedCount
+				],
+				borderWidth: [0, 0, 0]
+			}]
+		},
+		options: {
+			maintainAspectRatio: false,
+			legend: {
+				position: "bottom",
+				display: false,
+				labels: {
+					fontColor: '#ddd',
+					boxWidth: 15
 				}
-				,
-				tooltips: {
-				  displayColors:false
-				}
-			   }
-			});
-		
-
+			},
+			tooltips: {
+				displayColors: false
+			}
+		}
+	});
 		
 		
    });	 

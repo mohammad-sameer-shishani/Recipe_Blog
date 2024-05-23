@@ -1,16 +1,21 @@
 ﻿@model Tuple<IEnumerable<User>,IEnumerable<Category>,IEnumerable<Recipe>,IEnumerable<Testimonial>,IEnumerable<User>,IEnumerable<Homepage>>
 @using Microsoft.AspNetCore.Http
 @inject IHttpContextAccessor accessor;
+@inject ModelContext _context;
 @{
     Layout = "~/Views/Shared/_UserLayout.cshtml";
+    Homepage home = new();
+    home = _context.Homepages.SingleOrDefault();
+
 }
+
 <!-- Breadcrumb Section Begin -->
-<section class="breadcrumb-section " style=" background-image:url('img/peaches (1).jpg') ; background-position:center ;">
+<section class="breadcrumb-section " style=" background-image:url('/User/img/peaches (1).jpg') ; background-position:center ;">
     <div class="container ">
         <div class="row">
             <div class="col-lg-12 text-center">
                 <div class="breadcrumb__text">
-                    <h2 class="">Welcome To Shishani Recipes</h2>
+                    <h2 class="">@home.NavbarTitle</h2>
 
                 </div>
             </div>
@@ -18,6 +23,7 @@
     </div>
 </section>
 <!-- Breadcrumb Section End -->
+
 <!-- Featured Section Begin -->
 <section class="featured spad">
     <div class="container">
@@ -43,7 +49,7 @@
             {
                 <div class="col-lg-3 col-md-4 col-sm-6 mix @i.Name">
                         <div class="featured__item">
-                        <div class="featured__item__pic rounded-5" style="background-image:url(@i.Imgpath)">
+                        <div class="featured__item__pic rounded-5" style="background-image:url(User/@i.Imgpath)">
                             <ul class="featured__item__pic__hover">
                                 <li><a asp-action="CategoryDetails" asp-route-id="@i.Id"><i class="fa fa-heart"></i></a></li>
                                 <li><a href="#"><i class="fa fa-retweet"></i></a></li>
@@ -71,24 +77,7 @@
     </div>
 </section>
 <!-- Featured Section End -->
-<!-- Banner Begin -->
-@* <div class="banner">
-    <div class="container">
-        <div class="row">
-            <div class="col-lg-6 col-md-6 col-sm-6">
-                <div class="banner__pic">
-                    <img src="~/User/img/banner/banner-1.jpg" alt="">
-                </div>
-            </div>
-            <div class="col-lg-6 col-md-6 col-sm-6">
-                <div class="banner__pic">
-                    <img src="~/User/img/banner/banner-2.jpg" alt="">
-                </div>
-            </div>
-        </div>
-    </div>
-</div> *@
-<!-- Banner End -->
+
 <!-- Latest Product Section Begin -->
 <section class="latest-product spad">
     <div class="container">
@@ -99,19 +88,21 @@
                     <div class="latest-product__slider owl-carousel">
                             
                             @foreach(var x in Model.Item5){
+                            if(x.Recipes.Count()!=0) {
                                 <div class="latest-prdouct__slider__item">
-                            
+
                                     <a asp-action="ChefDetails" asp-route-id="@x.Id" class="latest-product__item">
-                                    <div class="latest-product__item__pic">
-                                        <img src="~/User/img/latest-product/lp-1.jpg" alt="chef image">
-                                    </div>
-                                    <div class="latest-product__item__text">
-                                        <h6>@x.Firstname @x.Lastname</h6>
-                                        <span>@x.Recipes.Count() Recipes</span>
-                                    </div>
+                                        <div class="latest-product__item__pic">
+                                            <img src="~/User/img/latest-product/lp-1.jpg" alt="chef image">
+                                        </div>
+                                        <div class="latest-product__item__text">
+                                            <h6>@x.Firstname @x.Lastname</h6>
+                                            <span>@x.Recipes.Count() Recipes</span>
+                                        </div>
                                     </a>
                                 </div>
                             }
+                        }
                             
                     </div>
                 </div>
@@ -126,7 +117,7 @@
 
                                 <a asp-action="CategoryDetails" asp-route-id="@x.Id" class="latest-product__item">
                                     <div class="latest-product__item__pic">
-                                        <img src="img/@x.Imgpath" alt="chef image">
+                                        <img src="User/@x.Imgpath" alt="chef image">
                                     </div>
                                     <div class="latest-product__item__text">
                                         <h6>@x.Name </h6>
@@ -149,7 +140,7 @@
 
                                 <a asp-action="RecipeDetails" asp-route-id="@x.Id" class="latest-product__item">
                                     <div class="latest-product__item__pic">
-                                        <img src="img/shishani_recipe-removebg-preview.png" alt="chef image">
+                                        <img src="User/img/shishani_recipe-removebg-preview.png" alt="chef image">
                                     </div>
                                     <div class="latest-product__item__text">
                                         <h6>@x.Name </h6>
@@ -175,23 +166,38 @@
                 </div>
             </div>
         </div>
-        <div class="row justify-content-between">
-            @foreach (var i in Model.Item4)
-            {
-                <div class="col-lg-3 col-md-3 col-sm-5 border border-5 m-3">
-                    <div class="blog__item">
-                        <div class="blog__item__pic d-none"></div>
-                        <div class="blog__item__text">
-                            <div class="row"><img class="col-3 rounded-5" src="~/User/img/blog/blog-1.jpg" alt=""><p class="col-9">@i.User.Firstname</p></div>
-                            <h5><a>@i.Content</a></h5>
-                            <ul>
-                                <li><i class="fa fa-calendar-o"></i>   @i.Creationdate</li>
-                            </ul>
-                        </div>
-                    </div>
-                </div>
-            }
-        </div>
+    
     </div>
 </section>
-<!-- Blog Section End -->
+
+
+<section class="latest-product spad">
+    <div class="container">
+        <div class="row">
+
+           <div class="col-10 ">
+           <div class="latest-product__text">
+           <h4>Testimonials</h4>
+           <div class="latest-product__slider owl-carousel">
+               @foreach (var item in Model.Item4)
+               {
+                   <div class="latest-prdouct__slider__item">
+   
+                       <a class="latest-product__item">
+                           <div class="latest-product__item__pic">
+                               <img src="~/User/img/man-default.png" alt="avatar">
+                           </div>
+                           <div class="latest-product__item__text">
+                               <h6>Name: @item.User.Firstname @item.User.Lastname </h6>
+                               <span>@item.Content</span>
+                               <h6>Posted at: @item.Creationdate@item.User.Lastname </h6>
+                           </div>
+                       </a>
+                   </div>
+               }
+           </div>
+       </div>
+   </div>
+       </div>
+    </div>
+</section>

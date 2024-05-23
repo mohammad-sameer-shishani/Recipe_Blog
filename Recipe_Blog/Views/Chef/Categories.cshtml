@@ -5,30 +5,40 @@
     Layout = "~/Views/Shared/_ChefLayout.cshtml";
 }
 
-<h1>Index</h1>
+<h1 class="mx-5">Categories</h1>
 
-<p>
-    <a asp-action="Create">Create New</a>
-</p>
-<table class="table">
+
+<table class="table mx-5">
     <thead>
         <tr>
             <th>
+                Image
+            </th>
+            <th> 
                 @Html.DisplayNameFor(model => model.Name)
             </th>
-            <th></th>
+            <th>
+                # Recipes
+            </th>
         </tr>
     </thead>
     <tbody>
         @foreach (var item in Model)
         {
             <tr>
+                <th>
+                    <img src="~/User/@item.Imgpath" height="50px" width="50px" class="rounded"></img>
+                </th>
                 <td>
                     @Html.DisplayFor(modelItem => item.Name)
+                    
                 </td>
+
                 <td>
-                    <a asp-action="Details" asp-route-id="@item.Id">Details</a>
+                    @item.Recipes.Count()
+
                 </td>
+             
             </tr>
         }
     </tbody>

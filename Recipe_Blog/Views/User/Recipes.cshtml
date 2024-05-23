@@ -11,9 +11,12 @@
 {   <div class="row justify-content-between px-5">
     @foreach (var i in Model)
     {
-        <div class="card m-3 col shadow" style="width: 18rem;">
-            <img src="~/User/img/man-default.png" class="card-img-top" alt="...">
-            <div class="card-body">
+            <div class="card m-5 col-3  shadow " style="width: 18rem;">
+                @if (i.Imgpath!=null)
+                {
+                    <img src="@i.Imgpath" class="card-img-top" alt="Recipe Pic">
+                }
+                <div class="card-body">
                 <h5 class="card-title">Recipe : @i.Name</h5>
                 <p class="card-text">Description : @i.Description</p>
             </div>
@@ -23,8 +26,8 @@
                 <li class="list-group-item">Category : @i.Category.Name</li>
             </ul>
             <div class="card-body">
-                <a asp-action="RecipeDetails" asp-route-id="@i.Id" class="card-link">Recipe Details</a>
-                <a asp-action="Checkout" asp-route-id="@i.Id" class="card-link">Buy Recipe</a>
+                <a asp-action="RecipeDetails" asp-route-id="@i.Id" class="card-link btn btn-secondary">Recipe Details</a>
+                    <a asp-action="Checkout" asp-route-id="@i.Id" class="card-link btn btn-primary">Buy Recipe</a>
             </div>
         </div>
 
