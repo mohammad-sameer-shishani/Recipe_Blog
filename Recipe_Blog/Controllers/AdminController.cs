@@ -427,6 +427,7 @@ namespace Recipe_Blog.Controllers
         // GET: EditAboutUs
         public async Task<IActionResult> AboutUs()
         {
+            ViewBag.About=_context.Aboutus.FirstOrDefault();
             return _context.Aboutus != null ?
                         View(await _context.Aboutus
                         .SingleOrDefaultAsync()) :
@@ -434,7 +435,7 @@ namespace Recipe_Blog.Controllers
         }
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Aboutus(decimal id, Aboutu aboutu)
+        public async Task<IActionResult> Aboutus(decimal id, Aboutu aboutu ,string? Ingpath)
         {
             if (id != aboutu.Id)
             {
@@ -443,10 +444,26 @@ namespace Recipe_Blog.Controllers
 
             if (ModelState.IsValid)
             {
+                if (aboutu.ImageFile != null)
+                {
+                    string wwwrootPath = _webHostEnvironment.WebRootPath;
+                    string imageName = Guid.NewGuid().ToString() + "" + aboutu.ImageFile.FileName;
+                    string fullPath = Path.Combine(wwwrootPath + "/User/img/", imageName);
+                    using (var fileStream = new FileStream(fullPath, FileMode.Create))
+                    {
+                        await aboutu.ImageFile.CopyToAsync(fileStream);
+                    }
+                    aboutu.Ingpath = imageName;
+                }
+                else
+                {
+                    aboutu.Ingpath = Ingpath;
+
+                }
                 _context.Update(aboutu);
                 await _context.SaveChangesAsync();
 
-                return RedirectToAction(nameof(Aboutus));
+                return RedirectToAction(nameof(Index));
             }
             return View(aboutu);
         }

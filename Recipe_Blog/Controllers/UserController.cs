@@ -334,6 +334,7 @@ Shishani Recipe Blog Team";
 
             var category = await _context.Categories
                 .Include(u=>u.Recipes)
+                .ThenInclude(u => u.User)
                 .SingleOrDefaultAsync(m => m.Id == id);
             if (category == null)
             {
@@ -348,6 +349,7 @@ Shishani Recipe Blog Team";
             var modelContext = await _context.Recipes
                 .Include(r => r.Category)
                 .Include(r => r.User)
+                .Where(r => r.RecipeStatusId==2)
                 .OrderBy(x => x.Creationdate)
                 .ToListAsync();
             return View( modelContext);
@@ -358,7 +360,8 @@ Shishani Recipe Blog Team";
             var modelContext = await _context.Recipes
                 .Include(r => r.Category)
                 .Include(r => r.User)
-                .OrderBy(x => x.Creationdate)
+				.Where(r => r.RecipeStatusId == 2)
+				.OrderBy(x => x.Creationdate)
                 .ToListAsync();
             if(!String.IsNullOrEmpty(recipe))
                 modelContext=modelContext.Where(x=>x.Name.ToLower().Contains(recipe.ToLower())).ToList();

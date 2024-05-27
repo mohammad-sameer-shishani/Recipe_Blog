@@ -14,7 +14,7 @@
     <div class="container ">
         <div class="row">
             <div class="col-lg-12 text-center">
-                <div class="breadcrumb__text">
+                <div class="breadcrumb__text" style="object-fit: fill">
                     <h2 class="" style="text-shadow:2px 2px 4px #000000 ; color:rgb(127, 173, 57)">@home.NavbarTitle</h2>
 
                 </div>
@@ -51,20 +51,13 @@
                 {
                     <div class="col-lg-3 col-md-4 col-sm-6 mix @i.Name">
                         <div class="featured__item">
-                            <div class="featured__item__pic rounded-5" style="background-image:url(/User/img/@i.Imgpath)">
-                              
+                            <div class="" style="height:250px; width:250px ; object-fit:fill">
+                                <img src="/User/img/@i.Imgpath" style=" border-radius:25% " height="250px" width="250px" />
                             </div>
                             <div class="featured__item__text">
-                                <h5>@i.Name</h5>
-                                <h6><a href="#">(@r.Count(x => x.CategoryId == i.Id)) Recipes</a></h6>
-                                @if (accessor.HttpContext.Session.GetInt32("userSession") != null)
-                                {
-                                    <a class="site-btn" asp-action="CategoryDetails" asp-route-id="@i.Id">Go To @i.Name</a>
-                                 }
-                                else
-                                {
-                                    <a class="site-btn" asp-action="Login" asp-controller="Auth">Go To @i.Name</a>
-                                }
+                                <h4><b>@i.Name</b></h4>
+                                <h6><a >(@r.Count(x => x.CategoryId == i.Id)) Recipes</a></h6>
+                                  <a style="border-radius:5%" class="site-btn" asp-action="CategoryDetails" asp-route-id="@i.Id">Go To @i.Name</a>
                             </div>
                     </div>
                 </div>
@@ -94,7 +87,7 @@
 
                                     <a asp-action="ChefDetails" asp-route-id="@x.Id" class="latest-product__item">
                                         <div class="latest-product__item__pic">
-                                            <img src="/User/img/latest-product/lp-1.jpg" alt="">
+                                            <img src="/User/img/@x.Imgpath" style="border-radius:10%">
                                         </div>
                                         <div class="latest-product__item__text">
                                             <h6>@x.Firstname @x.Lastname</h6>
@@ -118,11 +111,11 @@
 
                                 <a asp-action="CategoryDetails" asp-route-id="@x.Id" class="latest-product__item">
                                     <div class="latest-product__item__pic">
-                                        <img src="/User/img/@x.Imgpath" alt="">
+                                        <img src="/User/img/@x.Imgpath" style="border-radius:10%">
                                     </div>
                                     <div class="latest-product__item__text">
                                         <h6>@x.Name </h6>
-                                        <span>@x.Recipes.Count()</span>
+                                        <span>@x.Recipes.Count() Recipes</span>
                                     </div>
                                 </a>
                             </div>
@@ -141,7 +134,7 @@
 
                                 <a asp-action="RecipeDetails" asp-route-id="@x.Id" class="latest-product__item">
                                     <div class="latest-product__item__pic">
-                                        <img src="/User/img/shishani_recipe-removebg-preview.png" alt="">
+                                        <img src="/User/img/@x.Imgpath" style="border-radius:10%">
                                     </div>
                                     <div class="latest-product__item__text">
                                         <h6>@x.Name </h6>

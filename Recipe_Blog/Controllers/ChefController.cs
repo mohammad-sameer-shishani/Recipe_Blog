@@ -242,11 +242,9 @@ namespace Recipe_Blog.Controllers
         }
 
         // POST: Chef/Edit/5
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(decimal id, [Bind("Id,Name,Price,ImageFile,Description,CategoryId")] Recipe recipe,string? imgpath, decimal? statusId, decimal? userId, DateTime? createdate)
+        public async Task<IActionResult> Edit(decimal id, [Bind("Id,Name,Price,ImageFile,Description,Ingredients,Instructions,CategoryId")] Recipe recipe,string? imgpath, decimal? statusId, decimal? userId, DateTime? createdate)
         {
             if (id != recipe.Id)
             {

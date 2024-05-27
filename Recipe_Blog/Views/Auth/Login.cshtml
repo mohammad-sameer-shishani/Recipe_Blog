@@ -1,7 +1,9 @@
-﻿@model LoginViewModel
+﻿@using Recipe_Blog.Models 
+@model LoginViewModel
 @{
-    Layout = "~/Views/Shared/_AuthLayout.cshtml";
-	Homepage home = ViewBag.Homepage;
+	ModelContext context = new ModelContext();
+	Layout = "~/Views/Shared/_AuthLayout.cshtml";
+	Homepage home = ViewBag.Homepage??context.Homepages.First();
 }
 
 <div class="card card-authentication1 mx-auto my-5">

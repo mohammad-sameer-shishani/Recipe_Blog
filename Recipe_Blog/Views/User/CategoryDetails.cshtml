@@ -17,16 +17,16 @@
             @foreach(var i in Model.Recipes.Where(u=>u.CategoryId==Model.Id))
             {
                 <div class="card m-3" style="width: 18rem;">
-                    <img src="~/User/img/@i.Imgpath" class="card-img-top" alt="">
+                    <img src="~/User/img/@i.Imgpath" class="card-img-top" style="border-radius:10%" >
                     <div class="card-body">
                         <h5 class="card-title"><strong>Recipe: </strong>@i.Name</h5>
                     </div>
                     <ul class="list-group list-group-flush">
-                        <li class="list-group-item"><strong>Chef : </strong>@i.Name</li>
-                        @* <li class="list-group-item"><strong>Price: </strong>$@i.Price</li> *@
                         <li class="list-group-item"><strong>Category: </strong>@i.Category.Name</li>
+                        <li class="list-group-item"><strong>Chef : </strong>@i.User.Firstname</li>
+                        <li class="list-group-item"><strong>Price: </strong>$@i.Price</li>
                     </ul>
-                        <h5 class="card-text mx-3"><strong>Description: </strong>@i.Description</h5>
+                       @*  <h5 class="card-text mx-3"><strong>Description: </strong>@i.Description</h5> *@
                     <div class="card-body row align-content-end">
                         <a asp-action="RecipeDetails" asp-route-id="@i.Id" class="card-link btn btn-outline-primary col">More Details</a>
                         <a asp-action="Checkout" asp-route-id="@i.Id" class="card-link btn btn-primary col">Buy Recipe</a>

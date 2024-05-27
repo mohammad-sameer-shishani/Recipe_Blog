@@ -3,6 +3,7 @@
 @{
     ViewData["Title"] = "AboutUs";
     Layout = "~/Views/Shared/_AdminLayout.cshtml";
+    Aboutu about = ViewBag.About;
 }
 
 <h1 class="mx-5">About Us</h1>
@@ -10,7 +11,7 @@
 <hr />
 <div class="row mx-5">
     <div class="col-md-4">
-        <form asp-action="AboutUs">
+        <form asp-action="AboutUs" enctype="multipart/form-data">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <div class="form-group">
                 <label asp-for="AboutusContent" class="control-label"></label>
@@ -24,10 +25,11 @@
                 <span asp-validation-for="AboutCreator" class="text-danger"></span>
             </div>
             <input type="hidden" asp-for="Id" />
-            <div class="form-group">
-                <label asp-for="Ingpath" class="control-label"></label>
-                <input asp-for="Ingpath" class="form-control" />
-                <span asp-validation-for="Ingpath" class="text-danger"></span>
+            <div class="form-group ">
+                <label asp-for="ImageFile" class="control-label"></label>
+                <input asp-for="ImageFile" class="form-control" />
+                <input name="Ingpath" class="d-none"  value="@about.Ingpath"/>
+                <span asp-validation-for="ImageFile" class="text-danger"></span>
             </div>
             <div class="form-group">
                 <input type="submit" value="Save" class="btn btn-primary" />
