@@ -1,0 +1,58 @@
+﻿@model IEnumerable<Recipe_Blog.Models.Request>
+
+@{
+    ViewData["Title"] = "MyOrders";
+    Layout = "~/Views/Shared/_UserLayout.cshtml";
+}
+
+<h2 class="mx-5">My Orders</h2>
+
+<table class="table mx-5">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.Recipe)
+            </th>
+            <th>
+                Category
+            </th>
+            <th>
+                Ordered in
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Recipe.Price)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Tax)
+            </th>
+           
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model) {
+            
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.Recipe.Name)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Recipe.Category.Name)
+                </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Requestdate)
+            </td>
+            <td>
+                
+                $@Html.DisplayFor(modelItem => item.Recipe.Price)
+            </td>
+             <td>
+                 $@Html.DisplayFor(modelItem => item.Tax)
+             </td>
+           
+            
+        </tr>
+}
+    </tbody>
+</table>
+<div class="site-btn mx-5 text-white"> <a asp-action="index" >Go Home</a> </div>

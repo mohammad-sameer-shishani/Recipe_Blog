@@ -18,6 +18,33 @@ namespace Recipe_Blog.Controllers
             _context = context;
             _webHostEnvironment = webHostEnvironment;
         }
+        [HttpGet("MonthlyReport")]
+
+        public async Task<IActionResult> MonthlyReport(int year, int month)
+        {
+            
+            var report = await _context.Requests
+                .Include(p => p.User)
+                .Include(p => p.Recipe)
+                .Include(r => r!.Recipe!.Category)
+                .Where(p => p.Requestdate!.Value.Year == year && p.Requestdate.Value.Month == month)
+                .ToListAsync();
+
+            return View("Reports", report);
+        }
+
+        [HttpGet("AnnualReport")]
+        public async Task<IActionResult> AnnualReport(int year)
+        {
+            var report = await _context.Requests
+                .Include(p => p.User)
+                .Include(p => p.Recipe)
+                .ThenInclude(r => r.Category)
+                .Where(p => p.Requestdate!.Value.Year == year)
+                .ToListAsync();
+            ViewBag.Year = year;
+            return View("Reports", report);
+        }
 
         public async Task<IActionResult> GetUserRequests(decimal userId)
         {
@@ -40,77 +67,7 @@ namespace Recipe_Blog.Controllers
             return View(requests); 
         }
 
-        // GET: Users/Edit/5
-        //public async Task<IActionResult> EditProfile(decimal? id)
-        //{
-        //    if (id == null || _context.Users == null)
-        //    {
-        //        return NotFound();
-        //    }
-
-        //    var user = await _context.Users.FindAsync(id);
-        //    if (user == null)
-        //    {
-        //        return NotFound();
-        //    }
-        //    ViewData["RoleId"] = new SelectList(_context.Roles, "Roleid", "Roleid", user.RoleId);
-        //    return View(user);
-        //}
-
-        // POST: Users/Edit/5
-
-        //[HttpPost]
-        //[ValidateAntiForgeryToken]
-        //public async Task<IActionResult> EditProfile(decimal id, [Bind("Id,Firstname,Lastname,Birthdate,RoleId,Imgpath")] User user)
-        //{
-        //    if (id != user.Id)
-        //    {
-        //        return NotFound();
-        //    }
-
-        //    if (ModelState.IsValid)
-        //    {
-        //        try
-        //        {
-        //            _context.Update(user);
-        //            await _context.SaveChangesAsync();
-        //        }
-        //        catch (DbUpdateConcurrencyException)
-        //        {
-        //            if (!UserExists(user.Id))
-        //            {
-        //                return NotFound();
-        //            }
-        //            else
-        //            {
-        //                throw;
-        //            }
-        //        }
-        //        return RedirectToAction(nameof(Index));
-        //    }
-        //    ViewData["RoleId"] = new SelectList(_context.Roles, "Roleid", "Roleid", user.RoleId);
-        //    return View(user);
-        //}
-
-        // GET: Users/ProfileDetails/5
-        //public async Task<IActionResult> ProfileDetails(decimal? id)
-        //{
-        //    if (id == null || _context.Users == null)
-        //    {
-        //        return NotFound();
-        //    }
-
-        //    var user = await _context.Users
-        //        .Include(u => u.Role)
-        //        .FirstOrDefaultAsync(m => m.Id == id);
-        //    if (user == null)
-        //    {
-        //        return NotFound();
-        //    }
-
-        //    return View(user);
-        //}
-
+       //GET: Admin/Search
         public IActionResult Search() 
         {
             var result = _context.Recipes
@@ -327,17 +284,19 @@ namespace Recipe_Blog.Controllers
                 if (category.ImageFile != null)
                 {
                     string wwwrootPath = _webHostEnvironment.WebRootPath;
-                    string imageName = Guid.NewGuid().ToString() + category.ImageFile.FileName;
-                    string imagePath = Path.Combine("img/", imageName);
+                    string imageName = Guid.NewGuid().ToString() + "" + category.ImageFile.FileName;
                     string fullPath = Path.Combine(wwwrootPath + "/User/img/", imageName);
-
                     using (var fileStream = new FileStream(fullPath, FileMode.Create))
                     {
-                        category.ImageFile.CopyToAsync(fileStream);
+                        await category.ImageFile.CopyToAsync(fileStream);
                     }
-                    category.Imgpath = imagePath;
+                    category.Imgpath = imageName;
                 }
+                else
+                {
+                    category.Imgpath = "logo.png";
 
+                }
 
                 _context.Add(category);
                 await _context.SaveChangesAsync();
@@ -349,12 +308,48 @@ namespace Recipe_Blog.Controllers
         // GET: EditCategory
         public async Task<IActionResult> EditCategory(decimal? id)
         {
+            ViewBag.Category =_context.Categories.Find(id);
             return _context.Categories != null ?
                         View(await _context.Categories
                         .Include(u => u.Recipes)
                         .SingleOrDefaultAsync(u => u.Id == id)) :
                         Problem("Entity set 'ModelContext.Categories'  is null.");
         }
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> EditCategory(decimal id, Category category,string? imgpath)
+        {
+            if (id != category.Id)
+            {
+                return NotFound();
+            }
+
+            if (ModelState.IsValid)
+            {
+                if (category.ImageFile != null)
+                {
+                    string wwwrootPath = _webHostEnvironment.WebRootPath;
+                    string imageName = Guid.NewGuid().ToString() + "" + category.ImageFile.FileName;
+                    string fullPath = Path.Combine(wwwrootPath + "/User/img/", imageName);
+                    using (var fileStream = new FileStream(fullPath, FileMode.Create))
+                    {
+                        await category.ImageFile.CopyToAsync(fileStream);
+                    }
+                    category.Imgpath = imageName;
+                }
+                else
+                {
+                    category.Imgpath = imgpath;
+
+                }
+                _context.Update(category);
+                    await _context.SaveChangesAsync();
+              
+                return RedirectToAction(nameof(Categories));
+            }
+            return View(category);
+        }
+
         // GET: CategoryDetails
         public async Task<IActionResult> CategoryDetails(decimal? id)
         {
@@ -397,7 +392,7 @@ namespace Recipe_Blog.Controllers
             }
 
             await _context.SaveChangesAsync();
-            return RedirectToAction(nameof(Index));
+            return RedirectToAction(nameof(Categories));
         }
         // GET: Categories
         public async Task<IActionResult> Categories()
@@ -420,26 +415,43 @@ namespace Recipe_Blog.Controllers
 
         public IActionResult Home()
         {
-            var users = _context.Users.ToList();
-            var categories = _context.Categories.ToList();
-            var recipes = _context.Recipes.ToList();
-            var testimonials = _context.Testimonials.ToList();
-            var chef = _context.Users.Where(u => u.RoleId == 2).ToList();
-            var home = _context.Homepages.ToList();
-            var contact = _context.Contactus.ToList();
-            var model = Tuple.Create<IEnumerable<User>, IEnumerable<Category>, IEnumerable<Recipe>, IEnumerable<Testimonial>, IEnumerable<User>, IEnumerable<Homepage>>(users, categories, recipes, testimonials, chef, home);
-
-            return View(model);
+            var home = _context.Homepages.FirstOrDefault();
+            return View(home);
         }
-        public IActionResult Testimonials()
+        public async Task<IActionResult> Testimonials()
         {
-            return View();
-        }
-        public IActionResult AboutUs()
-        {
-            return View();
+            var testimonials=await _context.Testimonials.Include(x=>x.User).ToListAsync();
+            return View(testimonials);
         }
        
+        // GET: EditAboutUs
+        public async Task<IActionResult> AboutUs()
+        {
+            return _context.Aboutus != null ?
+                        View(await _context.Aboutus
+                        .SingleOrDefaultAsync()) :
+                        Problem("Entity set 'ModelContext.Categories'  is null.");
+        }
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Aboutus(decimal id, Aboutu aboutu)
+        {
+            if (id != aboutu.Id)
+            {
+                return NotFound();
+            }
+
+            if (ModelState.IsValid)
+            {
+                _context.Update(aboutu);
+                await _context.SaveChangesAsync();
+
+                return RedirectToAction(nameof(Aboutus));
+            }
+            return View(aboutu);
+        }
+
+
         public async Task<IActionResult> RegisteredUsers()
         {
             var modelContext = await _context.Logins
@@ -460,24 +472,7 @@ namespace Recipe_Blog.Controllers
 
             return View(modelContext);
         }
-        //public IActionResult Profile1(decimal _id)
-        //{
-        //    var a = _context.Users.Include(x => x.Logins).SingleOrDefault(u => u.Id == _id);
-        //    return View(a);
-        //}
-        //[HttpPost]
-        //public IActionResult Profile1(decimal _id, User user)
-        //{
-        //    if (ModelState.IsValid)
-        //    {
-        //        user = _context.Users.SingleOrDefault(u => u.Id == _id);
-        //        _context.Update(user);
-        //        _context.SaveChangesAsync();
-        //        return RedirectToAction("Index");
-        //    }
-
-        //    return View(user);
-        //}
+      
         //GET : ChefDetails
         public async Task<IActionResult> ChefDetails(decimal? id)
         {
@@ -486,10 +481,7 @@ namespace Recipe_Blog.Controllers
                 .Include(r => r.User.Recipes)
                 .Where(r => r.User.Id == id)
                 .SingleOrDefaultAsync();
-            //var modelContext = _context.Users
-            //    .Include(r => r.Recipes)
-            //    .Include(r => r.Logins)
-            //    .Where(r => r.Id == id).SingleOrDefaultAsync();
+    
             return View(await model);
         }
         //GET : ChefDetails
@@ -505,36 +497,13 @@ namespace Recipe_Blog.Controllers
             return View(await model);
 
         }
-        // GET: UserController/PendingTestimonials
-        //public async Task<ActionResult> PendingTestimonials()
-        //{
-        //    var model = _context.Testimonials
-        //        .Include(x=>x.User)
-        //        .ToListAsync();
-        //    return View(await model);
-        //}// GET: UserController/AcceptedTestimonials
-        //public async Task<ActionResult> AcceptedTestimonials()
-        //{
-        //    var model = _context.Testimonials.Include(u => u.TestimonialStatus)
-        //        .Where(u => u.TestimonialStatus.Statusname == "Accepted")
-        //        .ToListAsync();
-        //    return View(await model);
-        //}
-        //// GET: UserController/RejectedTestimonials
-        //public async Task<ActionResult> RejectedTestimonials()
-        //{
-        //    var model = _context.Testimonials.Include(u => u.TestimonialStatus)
-        //        .Where(u => u.TestimonialStatus.Statusname == "Rejected")
-        //        .ToListAsync();
-        //    return View(await model);
-        //}
-
+       
         //GET : UserController/AcceptTestimonial
         
         public async Task<IActionResult> AcceptTestimonial(decimal id)
         {
 
-            if (id == null||_context.Testimonials == null)
+            if (id == null || _context.Testimonials == null)
             {
                 return NotFound();
             }
@@ -546,14 +515,15 @@ namespace Recipe_Blog.Controllers
                 await _context.SaveChangesAsync();
 
             }
-            return RedirectToAction("PendingTestimonials", "admin");
+            return RedirectToAction(nameof(Testimonials));
         }
 
         //GET : UserController/RejectTestimonial
-        
-        public async Task<IActionResult> RejectTestimonial(decimal? id)
+
+        public async Task<IActionResult> RejectTestimonial(decimal id)
         {
-            if (id == null||_context.Testimonials == null)
+
+            if (id == null || _context.Testimonials == null)
             {
                 return NotFound();
             }
@@ -563,9 +533,11 @@ namespace Recipe_Blog.Controllers
                 testimonial.TestimonialStatusId = 3;
                 _context.Testimonials.Update(testimonial);
                 await _context.SaveChangesAsync();
+
             }
-            return RedirectToAction("PendingTestimonials", "admin");
+            return RedirectToAction(nameof(Testimonials));
         }
+
         private bool UserExists(decimal id)
         {
             return (_context.Users?.Any(e => e.Id == id)).GetValueOrDefault();
@@ -713,55 +685,90 @@ namespace Recipe_Blog.Controllers
 
             return View(login);
         }
+		// GET: Homepages/EditHomePage/5
+		public async Task<IActionResult> EditHomePage(decimal? id)
+		{
+			if (id == null || _context.Homepages == null)
+			{
+				return NotFound();
+			}
 
+			var homepage = await _context.Homepages.FindAsync(id);
+			if (homepage == null)
+			{
+				return NotFound();
+			}
+            ViewBag.home=_context.Homepages.FirstOrDefault();
 
+            return View(homepage);
+		}
 
-        //[HttpPost]
-        //public async Task<ActionResult> AcceptTestimonial(decimal? id, [Bind("Id,TestimonialStatusId")]Testimonial t)
-        //{
-        //    if (ModelState.IsValid)
-        //    {
-        //        _context.Update(t);
-        //        await _context.SaveChangesAsync();
-        //    }
-        //    return RedirectToAction(nameof(PendingTestimonials));
-        //}
-        //[HttpPost]
-        //public async Task<ActionResult> RejectTestimonial()
-        //{
-        //    var model = _context.Testimonials.Include(u => u.TestimonialStatus)
-        //        .Where(u => u.TestimonialStatus.Statusname == "Rejected")
-        //        .ToListAsync();
-        //    return View(await model);
-        //}
-        // GET: EditTesti
-        //public async Task<IActionResult> EditTestimonial(decimal? id)
-        //{
-        //    return _context.Testimonials != null ?
-        //                View(await _context.Testimonials
-        //                .SingleOrDefaultAsync(u => u.Id == id)) :
-        //                Problem("Entity set 'ModelContext.Categories'  is null.");
-        //}
+		// POST: Homepages/EditHomePage/5
+		[HttpPost]
+		[ValidateAntiForgeryToken]
+		public async Task<IActionResult> EditHomePage(decimal id, [Bind("NavbarTitle,SupportPhoneNumber,LogoImageFile,HeroImageFile,FooterName,FooterPhoneNumber,FooterEmail,Copyright,Id")] Homepage homepage,string? HeroImg, string? Logo)
+		{
+			if (id != homepage.Id)
+			{
+				return NotFound();
+			}
 
-        //[HttpPost]
-        //[ValidateAntiForgeryToken]
-        //public async Task<IActionResult> EditTestimonial(decimal id, [Bind("Id,TestimonialStatusId")] Testimonial t)
-        //{
-        //    if (id != t.Id)
-        //    {
-        //        return NotFound();
-        //    }
+			if (ModelState.IsValid)
+			{
+                if (homepage.LogoImageFile != null)
+                {
+                    string wwwrootPath = _webHostEnvironment.WebRootPath;
+                    string imageName = Guid.NewGuid().ToString() + "" + homepage.LogoImageFile.FileName;
+                    string fullPath = Path.Combine(wwwrootPath + "/User/img/", imageName);
+                    using (var fileStream = new FileStream(fullPath, FileMode.Create))
+                    {
+                        await homepage.LogoImageFile.CopyToAsync(fileStream);
+                    }
+                    homepage.Logo = imageName;
+                }
+                else
+                {
+                    homepage.Logo= Logo;
 
-        //    if (ModelState.IsValid)
-        //    {
-        //            _context.Update(t);
-        //            await _context.SaveChangesAsync();
-
-        //        return RedirectToAction(nameof(Index));
-        //    }
-        //    ViewData["tata"] = new SelectList(_context.Statuses, "Statusid", "Statusname", t.TestimonialStatusId);
-        //    return View(t);
-        //}
-
-    }
+                }
+                if (homepage.HeroImageFile != null)
+                {
+                    string wwwrootPath = _webHostEnvironment.WebRootPath;
+                    string imageName = Guid.NewGuid().ToString() + "" + homepage.HeroImageFile.FileName;
+                    string fullPath = Path.Combine(wwwrootPath + "/User/img/", imageName);
+                    using (var fileStream = new FileStream(fullPath, FileMode.Create))
+                    {
+                        await homepage.HeroImageFile.CopyToAsync(fileStream);
+                    }
+                    homepage.HeroImg = imageName;
+                }
+                else
+                {
+                    homepage.HeroImg = HeroImg;
+                }
+                try
+				{
+					_context.Update(homepage);
+					await _context.SaveChangesAsync();
+				}
+				catch (DbUpdateConcurrencyException)
+				{
+					if (!HomepageExists(homepage.Id))
+					{
+						return NotFound();
+					}
+					else
+					{
+						throw;
+					}
+				}
+				return RedirectToAction(nameof(Index));
+			}
+			return View(homepage);
+		}
+		private bool HomepageExists(decimal id)
+		{
+			return (_context.Homepages?.Any(e => e.Id == id)).GetValueOrDefault();
+		}
+	}
 }

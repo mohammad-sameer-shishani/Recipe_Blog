@@ -432,12 +432,6 @@ public partial class ModelContext : DbContext
 
             entity.ToTable("VISA");
 
-            entity.HasIndex(e => e.Cardnumber, "SYS_C008680").IsUnique();
-
-            entity.HasIndex(e => e.Cvc, "SYS_C008681").IsUnique();
-
-            entity.HasIndex(e => e.Nameoncard, "SYS_C008682").IsUnique();
-
             entity.Property(e => e.Id)
                 .ValueGeneratedOnAdd()
                 .HasColumnType("NUMBER")

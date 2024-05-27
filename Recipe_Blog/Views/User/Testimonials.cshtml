@@ -5,29 +5,46 @@
     Layout = "~/Views/Shared/_UserLayout.cshtml";
 }
 
-<div class="row justify-content-center"><h2>Testimonials</h2></div>
-
-    <div class="row justify-content-between m-5">
-@foreach (var item in Model) {
-    
-        <div class="card">
-            <div class="card-header">
-                Testimonial
+<div class="section-title">
+    <h2>Testimonials</h2>
+</div>
+<div id="testimonialCarousel" class="carousel slide" data-bs-ride="carousel">
+    <div class="carousel-inner">
+        @foreach (var item in Model)
+        {
+            <div class="carousel-item active rounded">
+                <div class="container">
+                    <div class="row justify-content-center">
+                        <div class="col-md-8">
+                            <div class="card text-center shadow-sm">
+                                <div class="card-header site-btn text-white">
+                                    Testimonial
+                                </div>
+                                <div class="card-body">
+                                    <p class="card-text">@item.User.Firstname @item.User.Lastname : "@item.Content"</p>
+                                </div>
+                               @*  <div class="card-footer text-muted">
+                                    By- @item.User.Firstname @item.User.Lastname
+                                </div> *@
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
-            <div class="card-body">
-                <blockquote class="blockquote mb-0">
-                    <p>@item.Content .</p>
-                    <footer class="blockquote-footer">@item.User.Firstname @item.User.Lastname</footer>
-                </blockquote>
-            </div>
-        </div>
-
-}
+        }
     </div>
-
+    <button class="carousel-control-prev" type="button" data-bs-target="#testimonialCarousel" data-bs-slide="prev">
+        <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+        <span class="visually-hidden">Previous</span>
+    </button>
+    <button class="carousel-control-next" type="button" data-bs-target="#testimonialCarousel" data-bs-slide="next">
+        <span class="carousel-control-next-icon" aria-hidden="true"></span>
+        <span class="visually-hidden">Next</span>
+    </button>
+</div>
 
 
 
 <p>
-    <a class="btn btn-secondary m-5" asp-action="CreateTestimonials">Add Testimonial</a>
+    <a class=" m-5 site-btn" asp-action="CreateTestimonials">Add Testimonial</a>
 </p>

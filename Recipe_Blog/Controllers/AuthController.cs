@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Identity;
+﻿using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
@@ -22,11 +23,14 @@ namespace Recipe_Blog.Controllers
         //GET: Index
         public IActionResult Index()
 		{
+			ViewBag.Homepage = _context.Homepages.First();
 			return View();
 		}
 		public IActionResult Login()
         {
-            return View();
+			ViewBag.Homepage=_context.Homepages.First();
+
+			return View();
         }
         [HttpPost]
         public async Task<IActionResult> Login([Bind("UserName,Password")]LoginViewModel login)
@@ -87,20 +91,35 @@ namespace Recipe_Blog.Controllers
         }
         public IActionResult RegisterAsUser()
         {
-            return View();
+			ViewBag.Homepage = _context.Homepages.First();
+			return View();
         }
         [HttpPost]
 		[ValidateAntiForgeryToken]
 		public async Task<IActionResult> RegisterAsUser(UserViewModel userViewModel)
         {
+			ViewBag.Homepage = _context.Homepages.First();
 			if (ModelState.IsValid)
             {
-                User user = new User();
+				bool checkEmail = await _context.Logins.AnyAsync(u => u.Email.ToLower() == userViewModel.Email.ToLower());
+				if (checkEmail)
+				{
+					ModelState.AddModelError("Email", "Email already exists.");
+					return View(userViewModel);
+				}
+
+				bool checkUserName = await _context.Logins.AnyAsync(u => u.UserName.ToLower() == userViewModel.UserName.ToLower());
+				if (checkUserName)
+				{
+					ModelState.AddModelError("Username", "Username already exists.");
+					return View(userViewModel);
+				}
+				User user = new User();
                 user.Firstname = userViewModel.Firstname;
                 user.Lastname = userViewModel.Lastname;
                 user.RoleId = 3;
                 user.Birthdate = userViewModel.Birthdate;
-				user.Imgpath = "~/User/img/man-default.png";
+				user.Imgpath = "man-default.png";
 
 				await _context.AddAsync(user);
 				await _context.SaveChangesAsync();
@@ -135,21 +154,35 @@ namespace Recipe_Blog.Controllers
 		//GET: Register as chef
 		public IActionResult RegisterAsChef()
 		{
+			ViewBag.Homepage = _context.Homepages.First();
 			return View();
 		}
 		[HttpPost]
 		[ValidateAntiForgeryToken]
 		public async Task<IActionResult> RegisterAsChef(UserViewModel userViewModel)
 		{
-
+			ViewBag.Homepage = _context.Homepages.First();
 			if (ModelState.IsValid)
 			{
+				bool checkEmail = await _context.Logins.AnyAsync(u => u.Email.ToLower() == userViewModel.Email.ToLower());
+				if (checkEmail)
+				{
+					ModelState.AddModelError("Email", "Email already exists.");
+					return View(userViewModel);
+				}
+
+				bool checkUserName = await _context.Logins.AnyAsync(u => u.UserName.ToLower() == userViewModel.UserName.ToLower());
+				if (checkUserName)
+				{
+					ModelState.AddModelError("Username", "Username already exists.");
+					return View(userViewModel);
+				}
 				User user = new User();
 				user.Firstname = userViewModel.Firstname;
 				user.Lastname = userViewModel.Lastname;
 				user.RoleId = 2;
 				user.Birthdate = userViewModel.Birthdate;
-				user.Imgpath = "~/User/img/chef.png";
+				user.Imgpath = "chef.png";
 				await _context.AddAsync(user);
 				await _context.SaveChangesAsync();
 				userViewModel.UserId = user.Id;
@@ -188,36 +221,11 @@ namespace Recipe_Blog.Controllers
         }
 		public IActionResult Logout()
 		{
+			ViewBag.Homepage = _context.Homepages.First();
 			HttpContext.Session.Clear();
 		
 			return View(nameof(Login));
 		}
-        //public IActionResult UpdateProfile(decimal id, [Bind("Id,FirstName,Lastname,Email,Username,Password")]UpdateProfile updateProfile)
-        //{
-          
-
-        //    if (ModelState.IsValid)
-        //    {
-        //        try
-        //        {
-        //            _context.Update(recipe);
-        //            await _context.SaveChangesAsync();
-        //        }
-        //        catch (DbUpdateConcurrencyException)
-        //        {
-        //            if (!RecipeExists(recipe.Id))
-        //            {
-        //                return NotFound();
-        //            }
-        //            else
-        //            {
-        //                throw;
-        //            }
-        //        }
-        //        return RedirectToAction(nameof(Index));
-        //    }
-        //    ViewData["CategoryId"] = new SelectList(_context.Categories, "Id", "Id", recipe.CategoryId);
-        //    ViewData["UserId"] = new SelectList(_context.Users, "Id", "Id", recipe.UserId);
-        //    return View(recipe);
+   
     }
 }

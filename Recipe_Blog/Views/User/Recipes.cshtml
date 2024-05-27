@@ -5,8 +5,9 @@
     Layout = "~/Views/Shared/_UserLayout.cshtml";
 }
 
-<h3 class="m-5 ">All Recipes</h3>
-
+<div class="section-title">
+    <h2>Recipes</h2>
+</div>
 @if (Model != null)
 {   <div class="row justify-content-between px-5">
     @foreach (var i in Model)
@@ -14,20 +15,19 @@
             <div class="card m-5 col-3  shadow " style="width: 18rem;">
                 @if (i.Imgpath!=null)
                 {
-                    <img src="@i.Imgpath" class="card-img-top" alt="Recipe Pic">
+                    <img src="/User/img/@i.Imgpath" class="card-img-top" alt="">
                 }
                 <div class="card-body">
                 <h5 class="card-title">Recipe : @i.Name</h5>
-                <p class="card-text">Description : @i.Description</p>
             </div>
             <ul class="list-group list-group-flush">
+                <li class="list-group-item">Category : @i.Category.Name</li>
                 <li class="list-group-item">Chef : @i.Name</li>
                 <li class="list-group-item">Price : $@i.Price</li>
-                <li class="list-group-item">Category : @i.Category.Name</li>
             </ul>
             <div class="card-body">
-                <a asp-action="RecipeDetails" asp-route-id="@i.Id" class="card-link btn btn-secondary">Recipe Details</a>
-                    <a asp-action="Checkout" asp-route-id="@i.Id" class="card-link btn btn-primary">Buy Recipe</a>
+                <a asp-action="RecipeDetails" asp-route-id="@i.Id" class="card-link btn btn-secondary">Details</a>
+                <a asp-action="checkout" asp-controller="User" asp-route-Id="@i.Id" class="card-link btn btn-primary">Buy Recipe</a>
             </div>
         </div>
 
@@ -35,53 +35,3 @@
     }
     </div>
 }
-@* 
-<table class="table" class="m-5">
-    <thead>
-        <tr>
-            <th>
-                @Html.DisplayNameFor(model => model.Name)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Price)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Description)
-            </th>
-       
-            <th>
-                @Html.DisplayNameFor(model => model.Category)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.User)
-            </th>
-            <th></th>
-        </tr>
-    </thead>
-    <tbody>
-@foreach (var item in Model) {
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.Name)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Price)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Description)
-            </td>
-          
-            <td>
-                @Html.DisplayFor(modelItem => item.Category.Name)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.User.Firstname)
-            </td>
-            <td> 
-                <a asp-action="RecipeDetails" asp-route-id="@item.Id">Details</a> 
-            </td>
-        </tr>
-}
-    </tbody>
-</table>
- *@

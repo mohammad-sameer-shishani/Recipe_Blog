@@ -3,21 +3,31 @@
 @{
     ViewData["Title"] = "Edit";
     Layout = "~/Views/Shared/_ChefLayout.cshtml";
+    Recipe recipe = ViewBag.Recipe;
+
 }
 
-<h1>Edit</h1>
+<h2 class="mx-5">Edit Recipe</h2>
 
-<h4>Recipe</h4>
 <hr />
-<div class="row">
+<div class="row mx-5">
     <div class="col-md-4">
-        <form asp-action="Edit">
+        <form asp-action="Edit" enctype="multipart/form-data">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <input type="hidden" asp-for="Id" />
             <div class="form-group">
                 <label asp-for="Name" class="control-label"></label>
                 <input asp-for="Name" class="form-control" />
                 <span asp-validation-for="Name" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="ImageFile" class="control-label"></label>
+                <input asp-for="ImageFile" class="form-control" />
+                <input value="@recipe.Imgpath" name="Imgpath" class="d-none" />
+                <input value="@recipe.UserId" name="userId" class="d-none" />
+                <input value="@recipe.Creationdate" name="createdate" class="d-none" />
+                <input value="@recipe.RecipeStatusId" name="statusId" class="d-none" />
+                <span asp-validation-for="ImageFile" class="text-danger"></span>
             </div>
             <div class="form-group">
                 <label asp-for="Price" class="control-label"></label>
@@ -43,7 +53,7 @@
     </div>
 </div>
 
-<div>
+<div class="mx-5">
     <a asp-action="MyRecipes">Back to List</a>
 </div>
 

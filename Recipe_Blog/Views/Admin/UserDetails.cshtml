@@ -4,14 +4,10 @@
     ViewData["Title"] = "UserDetails";
     Layout = "~/Views/Shared/_AdminLayout.cshtml";
 }
-@* 
-<h3 class="mx-5">@Model.Firstname Details</h3>
- *@
-
 
 <div class="col-5 ">
     <div class="card h-50">
-        <img class=" m-4" src="~/User/img/man-default.png" class="card-img-top" alt="Chef Image">
+        <img class=" m-4" src="/User/img/@Model.User.Imgpath" class="card-img-top" alt="" style="border-radius:50%">
         <div class="card-body">
             <h5 class="card-title">Name: @Model.User.Firstname @Model.User.Lastname</h5>
             <h5 class="card-title">UserName: @Model.UserName </h5>

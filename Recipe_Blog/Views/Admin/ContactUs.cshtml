@@ -5,11 +5,11 @@
     Layout = "~/Views/Shared/_AdminLayout.cshtml";
 }
 
-<h3 class="mx-5">Contact Us</h3>
-
+<h3 class="m-5">Contact Us</h3>
+<div class="row justify-content-between"> 
 @foreach (var item in Model)
 {
-    <div class="card border border-info col-4 mx-5" >
+    <div class="card border border-info col-5 mx-5" >
         <div class="card-body">
             <h5 class="card-title">Subject: @item.Subject</h5>
             <h6 class="card-subtitle mb-2 text-body-secondary">User: @item.Username</h6>
@@ -19,3 +19,4 @@
     </div>
 }
 
+</div>

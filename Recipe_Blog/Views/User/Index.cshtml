@@ -6,16 +6,16 @@
     Layout = "~/Views/Shared/_UserLayout.cshtml";
     Homepage home = new();
     home = _context.Homepages.SingleOrDefault();
-
+    IEnumerable<Recipe> r =ViewBag.Recipes;
 }
 
 <!-- Breadcrumb Section Begin -->
-<section class="breadcrumb-section " style=" background-image:url('/User/img/peaches (1).jpg') ; background-position:center ;">
+<section class="breadcrumb-section " style=" background-image:url('/User/img/@Model.Item6.First().HeroImg') ; background-position:center ;">
     <div class="container ">
         <div class="row">
             <div class="col-lg-12 text-center">
                 <div class="breadcrumb__text">
-                    <h2 class="">@home.NavbarTitle</h2>
+                    <h2 class="" style="text-shadow:2px 2px 4px #000000 ; color:rgb(127, 173, 57)">@home.NavbarTitle</h2>
 
                 </div>
             </div>
@@ -43,34 +43,32 @@
                 </div>
             </div>
         </div>
-        <div class="row featured__filter">
+        <div class="row justify-content-evenly featured__filter">
 
             @foreach(var i in Model.Item2)
             {
-                <div class="col-lg-3 col-md-4 col-sm-6 mix @i.Name">
+                if (r.Count(x => x.CategoryId == i.Id) > 0)
+                {
+                    <div class="col-lg-3 col-md-4 col-sm-6 mix @i.Name">
                         <div class="featured__item">
-                        <div class="featured__item__pic rounded-5" style="background-image:url(User/@i.Imgpath)">
-                            <ul class="featured__item__pic__hover">
-                                <li><a asp-action="CategoryDetails" asp-route-id="@i.Id"><i class="fa fa-heart"></i></a></li>
-                                <li><a href="#"><i class="fa fa-retweet"></i></a></li>
-                                <li><a href="#"><i class="fa fa-shopping-cart"></i></a></li>
-                            </ul>
-                        </div>
-                        <div class="featured__item__text">
-                            <h5>@i.Name</h5>
-                            <h6><a href="#">(@i.Recipes.Count()) Recipes</a></h6>
-                            @if (accessor.HttpContext.Session.GetInt32("userSession") != null)
-                            {
-                                <a asp-action="CategoryDetails" asp-route-id="@i.Id">Go To @i.Name</a>
-                            }
-                            else
-                            {
-                                <a asp-action="Login" asp-controller="Auth">Go To @i.Name</a>
-                            }
-                        </div>
+                            <div class="featured__item__pic rounded-5" style="background-image:url(/User/img/@i.Imgpath)">
+                              
+                            </div>
+                            <div class="featured__item__text">
+                                <h5>@i.Name</h5>
+                                <h6><a href="#">(@r.Count(x => x.CategoryId == i.Id)) Recipes</a></h6>
+                                @if (accessor.HttpContext.Session.GetInt32("userSession") != null)
+                                {
+                                    <a class="site-btn" asp-action="CategoryDetails" asp-route-id="@i.Id">Go To @i.Name</a>
+                                 }
+                                else
+                                {
+                                    <a class="site-btn" asp-action="Login" asp-controller="Auth">Go To @i.Name</a>
+                                }
+                            </div>
                     </div>
                 </div>
-                
+                }
             }
      
         </div>
@@ -81,6 +79,9 @@
 <!-- Latest Product Section Begin -->
 <section class="latest-product spad">
     <div class="container">
+        <div class="section-title">
+            <h2>Departments</h2>
+        </div>
         <div class="row">
             <div class="col-lg-4 col-md-6">
                 <div class="latest-product__text">
@@ -93,7 +94,7 @@
 
                                     <a asp-action="ChefDetails" asp-route-id="@x.Id" class="latest-product__item">
                                         <div class="latest-product__item__pic">
-                                            <img src="~/User/img/latest-product/lp-1.jpg" alt="chef image">
+                                            <img src="/User/img/latest-product/lp-1.jpg" alt="">
                                         </div>
                                         <div class="latest-product__item__text">
                                             <h6>@x.Firstname @x.Lastname</h6>
@@ -117,7 +118,7 @@
 
                                 <a asp-action="CategoryDetails" asp-route-id="@x.Id" class="latest-product__item">
                                     <div class="latest-product__item__pic">
-                                        <img src="User/@x.Imgpath" alt="chef image">
+                                        <img src="/User/img/@x.Imgpath" alt="">
                                     </div>
                                     <div class="latest-product__item__text">
                                         <h6>@x.Name </h6>
@@ -140,7 +141,7 @@
 
                                 <a asp-action="RecipeDetails" asp-route-id="@x.Id" class="latest-product__item">
                                     <div class="latest-product__item__pic">
-                                        <img src="User/img/shishani_recipe-removebg-preview.png" alt="chef image">
+                                        <img src="/User/img/shishani_recipe-removebg-preview.png" alt="">
                                     </div>
                                     <div class="latest-product__item__text">
                                         <h6>@x.Name </h6>
@@ -185,7 +186,7 @@
    
                        <a class="latest-product__item">
                            <div class="latest-product__item__pic">
-                               <img src="~/User/img/man-default.png" alt="avatar">
+                               <img src="/User/img/man-default.png" alt="avatar">
                            </div>
                            <div class="latest-product__item__text">
                                <h6>Name: @item.User.Firstname @item.User.Lastname </h6>
@@ -201,3 +202,21 @@
        </div>
     </div>
 </section>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
+<link href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css" rel="stylesheet" />
+
+<script>
+    $(document).ready(function () {
+        var errorMessage = '@TempData["ErrorMessage"]';
+        var successMessage = '@TempData["SuccessMessage"]';
+
+        if (errorMessage) {
+            toastr.error(errorMessage);
+        }
+
+        if (successMessage) {
+            toastr.success(successMessage);
+        }
+    });
+</script>

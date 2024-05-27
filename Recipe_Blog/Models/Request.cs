@@ -13,7 +13,7 @@ public partial class Request
 
     public decimal? UserId { get; set; }
 
-    public double? Tax { get; set; }
+    public decimal? Tax { get; set; }
 
     public virtual Recipe? Recipe { get; set; }
 

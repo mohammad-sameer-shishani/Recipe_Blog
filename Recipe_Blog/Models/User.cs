@@ -17,10 +17,9 @@ public partial class User
     public decimal? RoleId { get; set; }
 
     public string? Imgpath { get; set; }
-    [NotMapped]
-    public IFormFile? ImageFile { get; set; }
-
-    public virtual ICollection<Comment> Comments { get; set; } = new List<Comment>();
+	[NotMapped]
+	public IFormFile? ImageFile { get; set; }
+	public virtual ICollection<Comment> Comments { get; set; } = new List<Comment>();
 
     public virtual ICollection<Login> Logins { get; set; } = new List<Login>();
 

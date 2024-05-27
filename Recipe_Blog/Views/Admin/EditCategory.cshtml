@@ -3,6 +3,7 @@
 @{
     ViewData["Title"] = "EditCategory";
     Layout = "~/Views/Shared/_AdminLayout.cshtml";
+    Category cat = ViewBag.Category;
 }
 
 <h1 class="mx-5">Edit Category</h1>
@@ -10,13 +11,19 @@
 <hr />
 <div class="row mx-5">
     <div class="col-md-4">
-        <form asp-action="EditCategory">
+        <form asp-action="EditCategory" enctype="multipart/form-data">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <input type="hidden" asp-for="Id" />
             <div class="form-group">
                 <label asp-for="Name" class="control-label"></label>
                 <input asp-for="Name" class="form-control" />
+                <input name="imgpath" value="@cat.Imgpath" class="d-none" />
                 <span asp-validation-for="Name" class="text-danger"></span>
+            </div> 
+            <div class="form-group">
+                <label asp-for="ImageFile" class="control-label"></label>
+                <input asp-for="ImageFile" class="form-control" />
+                <span asp-validation-for="ImageFile" class="text-danger"></span>
             </div>
             <div class="form-group">
                 <input type="submit" value="Save" class="btn btn-primary" />

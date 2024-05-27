@@ -3,25 +3,21 @@
 @{
     ViewData["Title"] = "CategoryDetails";
     Layout = "~/Views/Shared/_UserLayout.cshtml";
+    ModelContext context = new ModelContext();
 }
 
-<h3 class="mx-5">@Model.Name Recipes</h3>
-
+<div class="section-title">
+    <h2>@Model.Name Recipes</h2>
+</div>
 <div class="m-5">
     <hr />
     <dl class="row">
-        @* <dt class = "col-sm-2" a>
-            @Html.DisplayNameFor(model => model.Name)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Name)
-        </dd>@*  *@
-        <img src="~/User/img/shishani_recipe-removebg-preview.png" class="card-img-top" alt="..."> 
+      
         @if (Model.Recipes != null)
             @foreach(var i in Model.Recipes.Where(u=>u.CategoryId==Model.Id))
             {
                 <div class="card m-3" style="width: 18rem;">
-                    <img src="~/User/@i.Imgpath" class="card-img-top" alt="...">
+                    <img src="~/User/img/@i.Imgpath" class="card-img-top" alt="">
                     <div class="card-body">
                         <h5 class="card-title"><strong>Recipe: </strong>@i.Name</h5>
                     </div>
@@ -40,5 +36,5 @@
     </dl>
 </div>
 <div class="m-5">
-    <a class="btn btn-primary" asp-action="Index">Back to List</a>
+    <a class="site-btn" asp-action="Categories">Back to Categories</a>
 </div>

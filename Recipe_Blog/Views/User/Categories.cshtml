@@ -4,37 +4,52 @@
 @{
     ViewData["Title"] = "Index";
     Layout = "~/Views/Shared/_UserLayout.cshtml";
+    IEnumerable<Recipe> r =ViewBag.Recipes;
 }
-
-<h3 class="m-5">Categories</h3>
+<div class="section-title">
+    <h2>Categories</h2>
+</div>
 
 <table class="m-5 table">
     <thead>
         <tr>
+            <th>Image</th>
             <th>
-                @Html.DisplayNameFor(model => model.Name)
+                Gategory Name
             </th>
-            <th></th>
+            <th>Num Of Recipes</th>
+            <th>View Details</th>
+
         </tr>
     </thead>
     <tbody>
 @foreach (var item in Model) {
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.Name)
-            </td>
-            <td>
-                    @if (accessor.HttpContext.Session.GetInt32("userSession") != null)
-                    {
-                        <a asp-action="CategoryDetails" asp-route-id="@item.Id">Details</a>
-                    }
-                    else
-                    {
-                        <a asp-action="login" asp-controller="Auth">Details</a>
-                    }
-                     
-            </td>
-        </tr>
-}
+            if (r.Count(x => x.CategoryId == item.Id) > 0)
+            {
+                <tr>
+                    <td>
+                        <div class="rounded-5"><img src="/User/img/@item.Imgpath" width="70px" height="70px"/></div>
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Name)
+                    </td>
+                    <td>
+
+                        @r.Count(x=>x.CategoryId==item.Id)
+                    </td>
+                    <td>
+                        @if (accessor.HttpContext.Session.GetInt32("userSession") != null)
+                        {
+                            <a class="site-btn" asp-action="CategoryDetails" asp-route-id="@item.Id">Details</a>
+                        }
+                        else
+                        {
+                            <a class="site-btn" asp-action="login" asp-controller="Auth">Details</a>
+                        }
+
+                    </td>
+                </tr>
+            }
+        }
     </tbody>
 </table>

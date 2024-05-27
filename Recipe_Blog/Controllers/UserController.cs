@@ -28,6 +28,8 @@ namespace Recipe_Blog.Controllers
         // GET: TestAboutus
         public  IActionResult aboutus()
         {
+            ViewBag.Homepage=_context.Homepages.First();
+
             return _context.Aboutus != null ?
                         View( _context.Aboutus.First()) :
                         Problem("Entity set 'ModelContext.Aboutus'  is null.");
@@ -35,7 +37,7 @@ namespace Recipe_Blog.Controllers
 
 
         // GET: Card
-        public async Task<IActionResult> Card(decimal? id)
+        public async Task<IActionResult> Card(decimal id)
         {
             if (id == null) return NotFound();
             var recipe = await _context.Recipes.SingleOrDefaultAsync(r=>r.Id==id);
@@ -60,42 +62,47 @@ namespace Recipe_Blog.Controllers
             {
                 if (paymentViewModel.CardId.ToString() != card?.Cardnumber.ToString())
                 {
-                    ModelState.AddModelError("", "Wrong Card number");
-                    return View(paymentViewModel);
+                    ModelState.AddModelError("", "Invalid Card number");
+                    TempData["ErrorMessage"] = "Invalid Card number";
+                    return RedirectToAction("checkout", "user", new { id = RecipeId });
                 }
                 if (paymentViewModel.Cvc != card.Cvc)
                 {
-                    ModelState.AddModelError("", "Wrong cvc");
-                    return View(paymentViewModel);
+                    ModelState.AddModelError("", "Invalid cvc");
+                    TempData["ErrorMessage"] = "Invalid cvc";
+                    return RedirectToAction("checkout", "user", new { id = RecipeId });
                 }
                 if (paymentViewModel.Fullname != card.Nameoncard)
                 {
-                    ModelState.AddModelError("", "Wrong Name on Card");
-                    return View(paymentViewModel);
+                    ModelState.AddModelError("", "Invalid Name on Card");
+                    TempData["ErrorMessage"] = "Invalid Name on Card"; 
+                    return RedirectToAction("checkout", "user", new { id = RecipeId });
                 }
 
-                if (
-                    (double)card!.Amount! < ((double) recipe!.Price! * 0.16)+ (double)recipe.Price)
+                if ((double)card!.Amount! < ((double) recipe!.Price! * 0.16)+ (double)recipe.Price)
                 {
                     ModelState.AddModelError("", "your Balance is lower than total price");
-                    return View(paymentViewModel);
+                    TempData["ErrorMessage"] = "Your balance is lower than the total price.";
+                    return RedirectToAction("checkout","user", new {id= RecipeId});
                 }
                 Request request=new Request();
                 request.RecipeId=RecipeId;
                 request.UserId = uid;
                 decimal totalPrice = Convert.ToDecimal(recipe.Price * Convert.ToDecimal(0.16)) + (decimal)recipe.Price;
-                request.Tax = ((double)recipe.Price * 0.16);
+                request.Tax = (decimal)((double)recipe.Price * 0.16);
                 _context.Add(request);
                 await _context.SaveChangesAsync();
                 card.Amount -= (decimal)totalPrice;
                 _context.Update(card);
                 await _context.SaveChangesAsync();
                 PurchasedPDF(RecipeId);
+                TempData["SuccessMessage"] = "Recipe purchased successfully! Check Your Email!";
                 return RedirectToAction(nameof(Index));
             }
             
             ModelState.AddModelError("", "Something went Wrong");
-            return View(paymentViewModel);
+            TempData["ErrorMessage"] = "Something Went Wrong";
+            return RedirectToAction("checkout", "user", new { id = RecipeId });
         }
 
         public bool BuyRecipe(decimal recipeId, decimal userId)
@@ -242,34 +249,7 @@ Shishani Recipe Blog Team";
             return RedirectToAction(nameof(Index));
         }
 
-        //public IActionResult PurchasedPDF(decimal id)
-        //{
-        //    var recipe = _context.Recipes
-        //                         .Include(r => r.Category)
-        //                         .Include(r => r.User)
-        //                         .Include(r => r.RecipeStatus)
-        //                         .FirstOrDefault(r => r.Id == id);
-        //    if (recipe == null)
-        //    {
-        //        return NotFound();
-        //    }
-        //    var pdfUpdater = new PDFGenerating(_context, _webHostEnvironment);
-        //    string filePath = pdfUpdater.UpdateRecipePdf(recipe);
-
-        //    var userId = HttpContext.Session.GetInt32("userSession");
-        //    var login =_context.Logins.Include(x=>x.User).Where(x=>x.UserId == userId).SingleOrDefault();
-
-        //    string customerEmail = login.Email;
-        //    string subject = "Discover the Authentic Taste of Shishani: New Recipe Inside!";
-        //    string body = $"Hello {login.User.Firstname} {login.User.Lastname},\r\n\r\nWe are thrilled to bring you a brand-new recipe from the Shishani Recipe Blog that will transport your taste buds straight to the heart of traditional cuisine.\r\n\r\nThis week’s feature: Authentic Shishani Delight\r\n\r\nThis recipe is a family treasure, passed down through generations, and it’s packed with the rich, aromatic flavors that define Shishani cooking. Whether you’re a seasoned cook or just starting your culinary journey, our step-by-step instructions make it easy to create this delicious dish at home.\r\n\r\nIngredients:\r\nA list of fresh, accessible ingredients that you can find at your local grocery store\r\nInstructions:\r\nSimple, clear, and detailed steps to ensure your success\r\nBut that’s not all! We’ve also included a special section on the cultural significance of this dish and how it’s traditionally served. It’s not just about cooking; it’s about connecting with the rich heritage and stories behind every bite.\r\n\r\nReady to get started? Click here to view the full recipe on our blog.\r\n\r\nWe can’t wait to hear about your cooking experience! Share your photos and tag us with #ShishaniRecipe for a chance to be featured on our social media.\r\n\r\nHappy cooking!\r\n\r\nWarm regards,\r\n\r\nShishani Recipe Blog Team";
-
-        //    EmailGenerator emailGenerator = new EmailGenerator();
-        //    emailGenerator.SendEmailWithPDF(customerEmail, subject, body, filePath);
-
-
-        //    // You can return the path or a success message, or trigger further actions
-        //    return RedirectToAction(nameof(Index));
-        //}
+      
 
         // GET: UserController
         public async Task<ActionResult> Index()
@@ -282,23 +262,19 @@ Shishani Recipe Blog Team";
             var chef=_context.Users.Where(u=>u.RoleId==2).ToList();
             var home= _context.Homepages.ToList();
             var contact=_context.Contactus.ToList();
-            var model = Tuple.Create<IEnumerable<User>, IEnumerable<Category>, IEnumerable<Recipe>, IEnumerable<Testimonial>, IEnumerable<User>, IEnumerable<Homepage>>(users,categories,recipes,testimonials,chef,home); 
-            
+            var model = Tuple.Create<IEnumerable<User>, IEnumerable<Category>, IEnumerable<Recipe>, IEnumerable<Testimonial>, IEnumerable<User>, IEnumerable<Homepage>>(users,categories,recipes,testimonials,chef,home);
+
+            ViewBag.Recipes = _context.Recipes.Include(x => x.Category).ToList();
             return View(model);
         }
 
-        // GET: Visas
-        //public async Task<IActionResult> Cards()
-        //{
-        //    var modelContext = _context.Visas.Include(v => v.User);
-        //    return View(await modelContext.ToListAsync());
-        //}
-
+     
 
         //GET : contactus 
         public ActionResult ContactUs()
         {
-                
+            ViewBag.Homepage=_context.Homepages.First();
+
             return View( );
         }
         [HttpPost]
@@ -323,9 +299,27 @@ Shishani Recipe Blog Team";
             return View(testimonials);
         }
 
+        // GET: UserController
+        public async Task<ActionResult> MyOrders()
+        {
+            var id = HttpContext.Session.GetInt32("userSession");
+            if (id==null)
+            {
+                return RedirectToAction("login","Auth");
+            }
+            var requests =await _context.Requests
+            .Include(u => u.User)
+            .Include(u => u.Recipe)
+            .Include(u => u.Recipe.Category)
+            .Where(u => u.UserId ==id)
+            .ToListAsync();
+            return View(requests);
+        }
+
         // GET: UserCategories
         public async Task<IActionResult> Categories()
         {
+            ViewBag.Recipes=_context.Recipes.Include(x=>x.Category).ToList();
             return _context.Categories != null ?
                         View(await _context.Categories.ToListAsync()) :
                         Problem("Entity set 'ModelContext.Categories'  is null.");
@@ -372,8 +366,13 @@ Shishani Recipe Blog Team";
             return View(modelContext);
         }
         // GET: RecipeDetails
-        public async Task<IActionResult> RecipeDetails(decimal? id)
+        public async Task<IActionResult> RecipeDetails(decimal id)
         {
+            var _id = HttpContext.Session.GetInt32("userSession");
+            if (_id == null)
+            {
+                return RedirectToAction("login", "Auth");
+            }
             var modelContext = _context.Recipes
                 .Include(r => r.Category)
                 .Include(r => r.User)
@@ -414,22 +413,26 @@ Shishani Recipe Blog Team";
         // GET: UserController/CreateTestimonials
         public ActionResult CreateTestimonials()
         {
+            var userId = HttpContext.Session.GetInt32("userSession");
+            ViewBag.UserId = userId;
             return View();
         }
 
         // POST: UserController/CreateTestimonials
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult CreateTestimonials(IFormCollection collection)
+        public  ActionResult CreateTestimonials(Testimonial testimonial)
         {
-            try
+            if (ModelState.IsValid)
             {
-                return RedirectToAction(nameof(Index));
+                testimonial.TestimonialStatusId = 1;
+                _context.Add(testimonial);
+                _context.SaveChangesAsync();
+                return RedirectToAction(nameof(Testimonials));
             }
-            catch
-            {
-                return View();
-            }
+           
+            ViewData["UserId"] = new SelectList(_context.Users, "Id", "Id", testimonial.UserId);
+            return View(testimonial);
         }
 
 
@@ -441,13 +444,19 @@ Shishani Recipe Blog Team";
         }
         
         //GET: user/Checkout
-        public async Task<IActionResult> Checkout(decimal? id)
+        public async Task<IActionResult> Checkout(decimal id)
         {
+            var _id = HttpContext.Session.GetInt32("userSession");
+            if (_id == null)
+            {
+                return RedirectToAction("login", "Auth");
+            }
+
             if (id == null || _context.Recipes == null)
             {
                 return NotFound();
             }
-
+           
             var recipe = await _context.Recipes
                 .Include(r => r.Category)
                 .Include(r => r.User)
@@ -462,6 +471,7 @@ Shishani Recipe Blog Team";
 
             ViewData["RecipeId"] = new SelectList(_context.Recipes, "Id", "Id");
             ViewData["UserId"] = new SelectList(_context.Users, "Id", "Id");
+            ViewBag.RecipeCard = recipe;
             return View(recipe);
         }
 
@@ -477,15 +487,9 @@ Shishani Recipe Blog Team";
             var userData = await _context.Users.Include(v => v.Visas).SingleOrDefaultAsync();
             var visaData = _context.Visas.SingleOrDefaultAsync(check => check.Id == purchase.UserId);
             if (visaData == null) return NotFound();
-            //ViewData["RecipeId"] = new SelectList(_context.Recipes, "Id", "Id", request.RecipeId);
-            //ViewData["UserId"] = new SelectList(_context.Users, "Id", "Id", request.UserId);
             foreach (var i in userData.Visas)
             {
-                //if (i.Amount < purchase.Amount)
-                //{
-                //    ModelState.AddModelError("", "you dont have a money");
-                //    return View(purchase);
-                //}
+                
                 if (i.Cardnumber != purchase.Cardnumber)
                 {
                     ModelState.AddModelError("", "your card number is invalid");
@@ -496,11 +500,6 @@ Shishani Recipe Blog Team";
                     ModelState.AddModelError("", "your Cvc number is invalid");
                     return View(purchase);
                 }
-                //if (i.Expdate != purchase.Expdate)
-                //{
-                //    ModelState.AddModelError("", "your Expire date number is invalid");
-                //    return View(purchase);
-                //}
                 if (i.Nameoncard.ToLower() != purchase.Nameoncard.ToLower().Trim())
                 {
                     ModelState.AddModelError("", "your Name is invalid");
@@ -519,6 +518,7 @@ Shishani Recipe Blog Team";
         // GET: Users/Edit/5
         public async Task<IActionResult> EditProfile(decimal? id)
         {
+            ViewBag.user = _context.Users.Find(id);
             if (id == null || _context.Users == null)
             {
                 return NotFound();
@@ -537,7 +537,7 @@ Shishani Recipe Blog Team";
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> EditProfile(decimal id, [Bind("Id,Firstname,Lastname,Birthdate,RoleId,Imgpath")] User user)
+        public async Task<IActionResult> EditProfile(decimal id, [Bind("Id,Firstname,Lastname,Birthdate,RoleId,ImageFile")] User user, string? Imgpath)
         {
             if (id != user.Id)
             {
@@ -546,6 +546,24 @@ Shishani Recipe Blog Team";
 
             if (ModelState.IsValid)
             {
+
+                if (user.ImageFile != null)
+                {
+                    string wwwrootPath = _webHostEnvironment.WebRootPath;
+                    string imageName = Guid.NewGuid().ToString() + "" + user.ImageFile.FileName;
+                    string fullPath = Path.Combine(wwwrootPath + "/User/img/", imageName);
+                    using (var fileStream = new FileStream(fullPath, FileMode.Create))
+                    {
+                        await user.ImageFile.CopyToAsync(fileStream);
+                    }
+                    user.Imgpath = imageName;
+                }
+                else
+                {
+                    user.Imgpath = Imgpath;
+
+                }
+
                 try
                 {
                     _context.Update(user);
@@ -622,8 +640,14 @@ Shishani Recipe Blog Team";
 
 
         // GET: Users/ProfileDetails/5
-        public async Task<IActionResult> ProfileDetails(decimal? id)
+        public async Task<IActionResult> ProfileDetails(decimal id)
         {
+            var _id = HttpContext.Session.GetInt32("userSession");
+            if (_id == null)
+            {
+                return RedirectToAction("login", "Auth");
+            }
+
             if (id == null || _context.Users == null)
             {
                 return NotFound();
@@ -640,8 +664,14 @@ Shishani Recipe Blog Team";
             return View(user);
         }
         // GET: Users/AccountDetails/5
-        public async Task<IActionResult> AccountDetails(decimal? id)
+        public async Task<IActionResult> AccountDetails(decimal id)
         {
+            var _id = HttpContext.Session.GetInt32("userSession");
+            if (_id == null)
+            {
+                return RedirectToAction("login", "Auth");
+            }
+
             if (id == null || _context.Logins == null)
             {
                 return NotFound();

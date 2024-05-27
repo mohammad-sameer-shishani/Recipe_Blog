@@ -2450,15 +2450,10 @@
   <ItemGroup>
     <_ContentIncludedByDefault Remove="Views\Admin\AccountDetails.cshtml" />
     <_ContentIncludedByDefault Remove="Views\Admin\EditAccount.cshtml" />
-    <_ContentIncludedByDefault Remove="Views\Chef\_ChefLayout.cshtml" />
   </ItemGroup>
 
   <ItemGroup>
     <UpToDateCheckInput Remove="Views\Admin\EditAccount.cshtml" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <UpToDateCheckInput Remove="Views\Chef\_ChefLayout.cshtml" />
   </ItemGroup>
 
 </Project>

@@ -3,9 +3,10 @@
 @inject ModelContext _context;
 @{
     Homepage home = new Homepage();
-    home = _context.Homepages.SingleOrDefault();
+    home = _context.Homepages.First();
     int? id = null;
     id= accessor.HttpContext.Session.GetInt32("userSession")?? 0;
+    User user = _context.Users.SingleOrDefault(x=>x.Id==id);
 }
 <!DOCTYPE html>
 <html lang="zxx">
@@ -46,27 +47,31 @@
     <div class="humberger__menu__overlay"></div>
     <div class="humberger__menu__wrapper">
         <div class="humberger__menu__logo">
-            <a asp-action="Index" asp-controller="User"><img src="~/User/img/logo.png" alt="recipe logo"></a>
+            <a asp-action="Index" asp-controller="User"><img src="/User/img/@home.Logo" alt=""></a>
         </div>
-        <div class="humberger__menu__cart d-none">
-            <ul>
-                <li><a href="#"><i class="fa fa-heart"></i> <span>1</span></a></li>
-                <li><a href="#"><i class="fa fa-shopping-bag"></i> <span>3</span></a></li>
-            </ul>
-            <div class="header__cart__price">item: <span>$150.00</span></div>
-        </div>
+      
         <div class="humberger__menu__widget">
             
             <div class="header__top__right__auth">
-                <a href="#"><i class="fa fa-user"></i> Login</a>
+                @if (@accessor.HttpContext.Session.GetInt32("userSession") == null)
+                {
+                    <a asp-controller="Auth" asp-action="Login"><i class="fa fa-user"></i> <b>Login</b></a>
+                }
+                else
+                {
+
+                    <a asp-controller="Auth" asp-action="Logout"><i class="fa fa-user"></i> <b>Logout</b></a>
+                }
             </div>
         </div>
         <nav class="humberger__menu__nav mobile-menu">
             <ul>
                 <li ><a asp-action="Index">Home</a></li>
-                <li><a asp-action="Shop">Shop</a></li>  
-                <li ><a asp-action="Aboutus">About</a></li>
-                <li><a asp-action="contactUs">Contact</a></li>
+                <li><a asp-action="ProfileDetails" asp-route-id="@id">Profile</a></li>
+                <li><a asp-action="AccountDetails" asp-route-id="@id">Account</a></li>
+                <li><a asp-action="MyOrders">My Orders</a></li>  
+                <li><a asp-action="Aboutus">About Us</a></li>
+                <li><a asp-action="contactUs">Contact Us</a></li>
             </ul>
         </nav>
         <div id="mobile-menu-wrap"></div>
@@ -95,7 +100,7 @@
                     </div>
                     <div class="col-lg-6">
                         <div class="header__top__right">
-                            
+                            <div class="header__top__right__auth mx-3"><a asp-action="MyOrders"> <b>My Orders</b></a></div>
                             <div class="header__top__right__auth">
                                 @if (@accessor.HttpContext.Session.GetInt32("userSession") == null)
                                 {
@@ -103,11 +108,12 @@
                                 }
                                 else
                                 {
-                                    <a asp-action="AccountDetails" asp-route-id="@id">Account</a>
+                                    
                                     <a asp-controller="Auth" asp-action="Logout"><i class="fa fa-user"></i> <b>Logout</b></a>
                                 }
                                     
                             </div>
+
                         </div>
                     </div>
                 </div>
@@ -117,7 +123,7 @@
             <div class="row">
                 <div class="col-lg-3">
                     <div class="header__logo">
-                        <a asp-action="index" asp-controller="User"><img src="~/User/img/logo.png" alt="Recipe Logo" width="120px" height="120px"></a>
+                        <a asp-action="index" asp-controller="User"><img src="/User/img/@home.Logo" alt="" width="120px" height="120px"></a>
                     </div>
                 </div>
                 <div class="col-lg-6">
@@ -126,12 +132,9 @@
                             <li class="active"><a asp-action="index" asp-controller="User">Home</a></li>
                             <li><a asp-action="Aboutus">About</a></li>
                             <li><a asp-action="contactUs">Contact</a></li>
-                            @if (accessor.HttpContext.Session.GetInt32("userSession") != null)
-                            {
-                            <li><a asp-action="Payment" asp-route-id="@id">Payment</a></li>
                             <li><a asp-action="ProfileDetails" asp-route-id="@id">Profile</a></li>
+                            <li><a asp-action="AccountDetails" asp-route-id="@id">Account</a></li>
                             
-                            }
                         </ul>
                     </nav>
                 </div>
@@ -166,12 +169,11 @@
                     <div class="hero__search">
                         <div class="hero__search__form">
                             <form asp-action="Recipes" class="row">
-                                <div class="hero__search__categories" class="col-2">
+                                <div class="hero__search__categories" class="col-2 ">
                                     Recipe
-                                    @* <span class="arrow_carrot-down"></span> *@
                                 </div>
                                 <input type="text" name="recipe" placeholder="What Recipe Do You Want?" class="col">
-                                <input type="submit" value="SEARCH" class="col-3 site-btn ">
+                                <input type="submit" value="SEARCH" class="col-3 site-btn text-white">
                                 
                             </form>
                         </div>
@@ -193,13 +195,13 @@
         @RenderBody()
 
         <!-- Footer Section Begin -->
-        <footer class="footer spad">
+        <footer class="footer spad mt-5">
             <div class="container">
                 <div class="row">
                     <div class="col-lg-3 col-md-6 col-sm-6">
                         <div class="footer__about">
                             <div class="footer__about__logo">
-                            <a asp-action="index"><img src="~/User/img/@home.Logo" alt="" height="80px" width="80px"></a>
+                            <a asp-action="index"><img src="/User/img/@home.Logo" alt="" height="80px" width="80px"></a>
                             </div>
                             <ul>
                                 <li>@home.FooterName </li>
@@ -247,7 +249,7 @@
                                     <!-- Link back to Colorlib can't be removed. Template is licensed under CC BY 3.0. -->
                                 </p>
                             </div>
-                            <div class="footer__copyright__payment"><img src="~/User/img/payment-item.png" alt=""></div>
+                            <div class="footer__copyright__payment"><img src="/User/img/payment-item.png" alt=""></div>
                         </div>
                     </div>
                 </div>

@@ -48,7 +48,6 @@ namespace Recipe_Blog.Controllers
 
         // POST: Visas/Create
         // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> CreateCard([Bind("Id,Cardnumber,Cvc,Nameoncard,Amount,UserId,Expdate")] Visa visa)
@@ -82,7 +81,6 @@ namespace Recipe_Blog.Controllers
 
         // POST: Visas/Edit/5
         // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> EditCard(decimal id, [Bind("Id,Cardnumber,Cvc,Nameoncard,Amount,UserId,Expdate")] Visa visa)

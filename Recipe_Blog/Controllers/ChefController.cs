@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.Intrinsics.X86;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
@@ -13,87 +14,30 @@ namespace Recipe_Blog.Controllers
     public class ChefController : Controller
     {
         private readonly ModelContext _context;
-
-        public ChefController(ModelContext context)
+        private readonly IWebHostEnvironment _webHostEnvironment;
+        public ChefController(ModelContext context, IWebHostEnvironment webHostEnvironment)
         {
             _context = context;
-            
+            _webHostEnvironment = webHostEnvironment;
         }
         public async Task<IActionResult> Index()
         {
+            var id = HttpContext.Session.GetInt32("chefSession")??0;
+            var Requests = await _context.Requests
+                .Include(x => x.User)
+                .Include(x=>x.Recipe)
+                .Where(x => x.Recipe!.UserId == id)
+                .OrderBy(x => x.Requestdate)
+                .ToListAsync();
+            ViewBag.totalIncome = _context.Requests
+                .Include(x => x.User)
+                .Include(x => x.Recipe)
+                .Where(x => x.Recipe!.UserId == id).Sum(x=>x.Recipe.Price);
 
-            return View();
+
+            return View(Requests);
         }
-        //// GET: Users/Edit/5
-        //public async Task<IActionResult> EditProfile(decimal? id)
-        //{
-        //    if (id == null || _context.Users == null)
-        //    {
-        //        return NotFound();
-        //    }
-
-        //    var user = await _context.Users.FindAsync(id);
-        //    if (user == null)
-        //    {
-        //        return NotFound();
-        //    }
-        //    ViewData["RoleId"] = new SelectList(_context.Roles, "Roleid", "Roleid", user.RoleId);
-        //    return View(user);
-        //}
-
-        //// POST: Users/Edit/5
-
-        //[HttpPost]
-        //[ValidateAntiForgeryToken]
-        //public async Task<IActionResult> EditProfile(decimal id, [Bind("Id,Firstname,Lastname,Birthdate,RoleId,Imgpath")] User user)
-        //{
-        //    if (id != user.Id)
-        //    {
-        //        return NotFound();
-        //    }
-
-        //    if (ModelState.IsValid)
-        //    {
-        //        try
-        //        {
-        //            _context.Update(user);
-        //            await _context.SaveChangesAsync();
-        //        }
-        //        catch (DbUpdateConcurrencyException)
-        //        {
-        //            if (!UserExists(user.Id))
-        //            {
-        //                return NotFound();
-        //            }
-        //            else
-        //            {
-        //                throw;
-        //            }
-        //        }
-        //        return RedirectToAction(nameof(Index));
-        //    }
-        //    ViewData["RoleId"] = new SelectList(_context.Roles, "Roleid", "Roleid", user.RoleId);
-        //    return View(user);
-        //}
-
-        //// GET: Users/ProfileDetails/5
-        //public async Task<IActionResult> ProfileDetails(decimal? id)
-        //{
-        //    if (id == null || _context.Users == null)
-        //    {
-        //        return NotFound();
-        //    }
-
-        //    var user = await _context.Users
-        //        .Include(u => u.Role)
-        //        .FirstOrDefaultAsync(m => m.Id == id);
-        //    if (user == null)
-        //    {
-        //        return NotFound();
-        //    }
-
-        //    return View(user);
-        //}
+      
 
         public async Task<IActionResult> Chefs() 
         {
@@ -243,19 +187,30 @@ namespace Recipe_Blog.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,Price,Description,Creationdate,Name,UserId,CategoryId,RecipeStatusId,Instructions,Ingredients")] Recipe recipe)
+        public async Task<IActionResult> Create([Bind("Id,Price,Description,Creationdate,Name,UserId,ImageFile,CategoryId,RecipeStatusId,Instructions,Ingredients")] Recipe recipe)
         {
             
 
             if (ModelState.IsValid)
             {
+                if (recipe.ImageFile != null)
+                {
+                    string wwwrootPath = _webHostEnvironment.WebRootPath;
+                    string imageName = Guid.NewGuid().ToString() + "" + recipe.ImageFile.FileName;
+                    string fullPath = Path.Combine(wwwrootPath + "/User/img/", imageName);
+                    using (var fileStream = new FileStream(fullPath, FileMode.Create))
+                    {
+                        await recipe.ImageFile.CopyToAsync(fileStream);
+                    }
+                    recipe.Imgpath = imageName;
+                }
+               
                 var _id = Convert.ToDecimal(HttpContext.Session.GetInt32("chefSession"));
-                recipe.Imgpath = "shishani_recipe-removebg-preview.png";
                 recipe.UserId = _id;
                 recipe.RecipeStatusId = 1;
                 _context.Add(recipe);
                 await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
+                return RedirectToAction(nameof(MyRecipes));
             }
 
             ViewData["CategoryId"] = new SelectList(_context.Categories, "Id", "Id", recipe.CategoryId);
@@ -279,8 +234,10 @@ namespace Recipe_Blog.Controllers
                 return NotFound();
             }
             GetChefLoginInfo();
-            ViewData["CategoryId"] = new SelectList(_context.Categories, "Id", "Id", recipe.CategoryId);
+            ViewData["CategoryId"] = new SelectList(_context.Categories, "Id", "Name", recipe.CategoryId);
             ViewData["UserId"] = new SelectList(_context.Users, "Id", "Id", recipe.UserId);
+
+            ViewBag.Recipe = _context.Recipes.Find(id);
             return View(recipe);
         }
 
@@ -289,7 +246,7 @@ namespace Recipe_Blog.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(decimal id, [Bind("Id,Name,Price,Description,CategoryId")] Recipe recipe)
+        public async Task<IActionResult> Edit(decimal id, [Bind("Id,Name,Price,ImageFile,Description,CategoryId")] Recipe recipe,string? imgpath, decimal? statusId, decimal? userId, DateTime? createdate)
         {
             if (id != recipe.Id)
             {
@@ -298,6 +255,27 @@ namespace Recipe_Blog.Controllers
 
             if (ModelState.IsValid)
             {
+                if (recipe.ImageFile != null)
+                {
+                    string wwwrootPath = _webHostEnvironment.WebRootPath;
+                    string imageName = Guid.NewGuid().ToString() + "" + recipe.ImageFile.FileName;
+                    string fullPath = Path.Combine(wwwrootPath + "/User/img/", imageName);
+                    using (var fileStream = new FileStream(fullPath, FileMode.Create))
+                    {
+                        await recipe.ImageFile.CopyToAsync(fileStream);
+                    }
+                    recipe.Imgpath = imageName;
+                }
+                else
+                {
+                    recipe.Imgpath = imgpath;
+
+                }
+                
+                recipe.Creationdate=createdate;
+                recipe.UserId = userId;
+                recipe.RecipeStatusId = statusId;
+
                 try
                 {
                     _context.Update(recipe);
@@ -392,6 +370,7 @@ namespace Recipe_Blog.Controllers
         // GET: Users/Edit/5
         public async Task<IActionResult> EditProfile(decimal? id)
         {
+            ViewBag.user=_context.Users.Find(id);
             if (id == null || _context.Users == null)
             {
                 return NotFound();
@@ -410,7 +389,7 @@ namespace Recipe_Blog.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> EditProfile(decimal id, [Bind("Id,Firstname,Lastname,Birthdate,RoleId,Imgpath")] User user)
+        public async Task<IActionResult> EditProfile(decimal id, [Bind("Id,Firstname,Lastname,Birthdate,RoleId,ImageFile")] User user,string? Imgpath)
         {
             if (id != user.Id)
             {
@@ -419,6 +398,24 @@ namespace Recipe_Blog.Controllers
 
             if (ModelState.IsValid)
             {
+
+                if (user.ImageFile != null)
+                {
+                    string wwwrootPath = _webHostEnvironment.WebRootPath;
+                    string imageName = Guid.NewGuid().ToString() + "" + user.ImageFile.FileName;
+                    string fullPath = Path.Combine(wwwrootPath + "/User/img/", imageName);
+                    using (var fileStream = new FileStream(fullPath, FileMode.Create))
+                    {
+                        await user.ImageFile.CopyToAsync(fileStream);
+                    }
+                    user.Imgpath = imageName;
+                }
+                else
+                {
+                    user.Imgpath = Imgpath;
+
+                }
+
                 try
                 {
                     _context.Update(user);

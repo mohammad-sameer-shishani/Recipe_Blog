@@ -1,0 +1,69 @@
+﻿@model Recipe_Blog.Models.Homepage
+
+@{
+    ViewData["Title"] = "EditHomePage";
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+    Homepage home = ViewBag.home;
+}
+
+<h2 class="mx-5">Edit HomePage</h2>
+
+<hr />
+<div class="row mx-5">
+    <div class="col-md-4">
+        <form asp-action="EditHomePage" enctype="multipart/form-data">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="form-group">
+                <label asp-for="NavbarTitle" class="control-label"></label>
+                <input asp-for="NavbarTitle" class="form-control" />
+                <span asp-validation-for="NavbarTitle" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="LogoImageFile" class="control-label"></label>
+                <input asp-for="LogoImageFile" class="form-control" />
+                <input name="HeroImg" class="d-none" value="@home.HeroImg" />
+                <input name="Logo" class="d-none" value="@home.Logo" />
+                <span asp-validation-for="LogoImageFile" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="SupportPhoneNumber" class="control-label"></label>
+                <input asp-for="SupportPhoneNumber" class="form-control" />
+                <span asp-validation-for="SupportPhoneNumber" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="HeroImageFile" class="control-label"></label>
+                <input asp-for="HeroImageFile" class="form-control" />
+                <span asp-validation-for="HeroImageFile" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="FooterName" class="control-label"></label>
+                <input asp-for="FooterName" class="form-control" />
+                <span asp-validation-for="FooterName" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="FooterPhoneNumber" class="control-label"></label>
+                <input asp-for="FooterPhoneNumber" class="form-control" />
+                <span asp-validation-for="FooterPhoneNumber" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="FooterEmail" class="control-label"></label>
+                <input asp-for="FooterEmail" class="form-control" />
+                <span asp-validation-for="FooterEmail" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Copyright" class="control-label"></label>
+                <input asp-for="Copyright" class="form-control" />
+                <span asp-validation-for="Copyright" class="text-danger"></span>
+            </div>
+            <input type="hidden" asp-for="Id" value="1"/>
+            <div class="form-group">
+                <input type="submit" value="Save" class="btn btn-primary" />
+            </div>
+        </form>
+    </div>
+</div>
+
+<div class="mx-5">
+    <a asp-action="Index">Back to Home</a>
+</div>
+

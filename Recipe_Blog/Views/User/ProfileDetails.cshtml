@@ -12,9 +12,9 @@
                     <h2>My Profile</h2>
                 </div>
                 <div class="row justify-content-center border rounded-5 shadow">
-                    <div class="col-5"><img src="~/User/img/man-default.png"></img></div>
+                    <div class="col-5"><img src="/User/img/@Model.Imgpath" style="border-radius:50%"></img></div>
                     <div class="col-8 row justify-content-center">
-                        <a class="btn btn-primary col-4 m-3 shadow" asp-action="EditProfile" asp-route-id="@Model.Id">Edit Profile</a>
+                        <a class="site-btn text-center col-4 m-3 shadow" asp-action="EditProfile" asp-route-id="@Model.Id">Edit Profile</a>
                     </div>
 
                     <div class="col-8 mb-3 row border rounded shadow">

@@ -21,10 +21,9 @@ public partial class Recipe
     public decimal? RecipeStatusId { get; set; }
 
     public string? Imgpath { get; set; }
-    [NotMapped]
-    public IFormFile? ImageFile { get; set; }
-
-    public string? Ingredients { get; set; }
+	[NotMapped]
+	public IFormFile? ImageFile { get; set; }
+	public string? Ingredients { get; set; }
 
     public string? Instructions { get; set; }
 
