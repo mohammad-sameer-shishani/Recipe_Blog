@@ -10,13 +10,15 @@ namespace Recipe_Blog.Models
         [Display(Name = "Last Name")]
         public string? Lastname { get; set; }
         [DataType(DataType.Date)]
-        public DateTime? Birthdate { get; set; }
+		[Display(Name = "Birth Date")]
+		public DateTime? Birthdate { get; set; }
 
         public string? Gender { get; set; }
 
         public decimal? RoleId { get; set; }
         public string Email { get; set; } = null!;
         [StringLength(50)]
-        public string UserName { get; set; } = null!;
+		[Display(Name = "User Name")]
+		public string UserName { get; set; } = null!;
     }
 }

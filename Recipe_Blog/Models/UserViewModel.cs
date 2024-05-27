@@ -11,8 +11,8 @@ namespace Recipe_Blog.Models
 		public string? Firstname { get; set; }
 		[Display(Name = "Last Name")]
 		public string? Lastname { get; set; }
-        //[DataType(DataType.Date)]
-        public DateTime? Birthdate { get; set; }
+		[Display(Name = "Birth Date")]
+		public DateTime? Birthdate { get; set; }
         [Required]
 		[StringLength(100)]
 		public string Email { get; set; } = null!;
@@ -21,9 +21,11 @@ namespace Recipe_Blog.Models
 		public string Password { get; set; } = null!;
         [Required]
 		[StringLength(50)]
+		[Display(Name = "User Name")]
 		public string UserName { get; set; } = null!;
         [NotMapped]
-        public IFormFile? imageFile { get; set; }
+		[Display(Name = "User Image")]
+		public IFormFile? imageFile { get; set; }
         public decimal? UserId { get; set; }
 		[NotMapped]
 		public decimal? GenderId { get; set; }

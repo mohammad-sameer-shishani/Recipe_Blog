@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Recipe_Blog.Models;
@@ -7,17 +8,18 @@ namespace Recipe_Blog.Models;
 public partial class User
 {
     public decimal Id { get; set; }
-
-    public string? Firstname { get; set; }
-
-    public string? Lastname { get; set; }
-
-    public DateTime? Birthdate { get; set; }
+	[Display(Name = "First Name")]
+	public string? Firstname { get; set; }
+	[Display(Name = "Last Name")]
+	public string? Lastname { get; set; }
+	[Display(Name = "Birth Date")]
+	public DateTime? Birthdate { get; set; }
 
     public decimal? RoleId { get; set; }
-
-    public string? Imgpath { get; set; }
+	[Display(Name = "Image Path")]
+	public string? Imgpath { get; set; }
 	[NotMapped]
+	[Display(Name = "User Image")]
 	public IFormFile? ImageFile { get; set; }
 	public virtual ICollection<Comment> Comments { get; set; } = new List<Comment>();
 

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 
 namespace Recipe_Blog.Models;
 
@@ -10,8 +11,8 @@ public partial class Login
     public string Email { get; set; } = null!;
 
     public string Password { get; set; } = null!;
-
-    public string UserName { get; set; } = null!;
+	[Display(Name = "User name")]
+	public string UserName { get; set; } = null!;
 
     public decimal? UserId { get; set; }
 

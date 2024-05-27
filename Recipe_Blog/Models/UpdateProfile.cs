@@ -9,13 +9,14 @@ namespace Recipe_Blog.Models
         public string? Firstname { get; set; }
         [Display(Name = "Last Name")]
         public string? Lastname { get; set; }
-
-        public DateTime? Birthdate { get; set; }
+		[Display(Name = "Birth Date")]
+		public DateTime? Birthdate { get; set; }
 
         public string? Gender { get; set; }
         public string Email { get; set; } = null!;
         [StringLength(50)]
-        public string UserName { get; set; } = null!;
+		[Display(Name = "User Name")]
+		public string UserName { get; set; } = null!;
         [Required]
         [StringLength(50)]
         public string Password { get; set; } = null!;
