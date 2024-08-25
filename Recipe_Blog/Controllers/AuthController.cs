@@ -139,9 +139,9 @@ namespace Recipe_Blog.Controllers
 					UserId = userViewModel.UserId,
 					Nameoncard = userViewModel.Firstname + userViewModel.Lastname,
 					Amount = 1000,
-					Cardnumber = 12341234,
+					Cardnumber = 1234123412341234,
                     Expdate = "1103",
-					Cvc = 111,
+					Cvc = 123,
                 };
                 await _context.AddAsync(visa);
                 await _context.SaveChangesAsync();

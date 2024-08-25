@@ -109,12 +109,15 @@ namespace Recipe_Blog.Controllers
 
             ViewBag.userCount = _context.Users.Where(x => x.RoleId == 3).Count();
             ViewBag.chefCount = _context.Users.Where(x => x.RoleId == 2).Count();
+
             ViewBag.testimonialAcceptedCount = _context.Testimonials.Where(x => x.TestimonialStatus.Statusname == "Accepted").Count();
             ViewBag.testimonialPendingCount = _context.Testimonials.Where(x => x.TestimonialStatus.Statusname == "Pending").Count();
             ViewBag.testimonialRejectedCount = _context.Testimonials.Where(x => x.TestimonialStatus.Statusname == "Rejected").Count();
+
             ViewBag.recipeAcceptedCount = _context.Recipes.Where(x => x.RecipeStatus.Statusname == "Accepted").Count();
-            ViewBag.recipePendingdCount = _context.Recipes.Where(x => x.RecipeStatus.Statusname == "Pending").Count();
+            ViewBag.recipePendingCount = _context.Recipes.Where(x => x.RecipeStatus.Statusname == "Pending").Count();
             ViewBag.recipeRejectedCount = _context.Recipes.Where(x => x.RecipeStatus.Statusname == "Rejected").Count();
+
             ViewBag.CategoriesCount = _context.Categories.Count();
 
             ViewBag.requests = _context.Requests.ToListAsync();

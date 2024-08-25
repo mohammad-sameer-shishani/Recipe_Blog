@@ -10,7 +10,7 @@
     var testimonialRejCount = ViewBag.testimonialRejectedCount;
     var categoryCount = ViewBag.categoriesCount;
     var recipeAccCount = ViewBag.recipeAcceptedCount;
-    var recipePendCount = ViewBag.recipePendingdCount;
+    var recipePendCount = ViewBag.recipePendingCount;
     var recipeRejCount = ViewBag.recipeRejectedCount;
     double up = (double)userCount / (userCount + chefCount) * 100;
     double cp = (double)chefCount / (userCount + chefCount) * 100;
@@ -18,7 +18,7 @@
     double rpp = (double)recipePendCount / (recipeAccCount + recipePendCount + recipeRejCount) * 100;
     double rrp = (double)recipeRejCount / (recipeAccCount + recipePendCount + recipeRejCount) * 100;
     double tap = (double)testimonialAccCount / (testimonialAccCount + testimonialPendCount + testimonialRejCount) * 100;
-    double tpp = (double)testimonialRejCount / (testimonialAccCount + testimonialPendCount + testimonialRejCount) * 100;
+    double tpp = (double)testimonialPendCount / (testimonialAccCount + testimonialPendCount + testimonialRejCount) * 100;
     double trp = (double)testimonialRejCount / (testimonialAccCount + testimonialPendCount + testimonialRejCount) * 100;
     var acceptedCount = ViewBag.recipeAcceptedCount??0;
     var pendingCount = ViewBag.recipePendingCount??0;
@@ -99,7 +99,7 @@
                         <div class="progress my-3" style="height:3px;">
                             <div class="progress-bar" style="width:@rpp%"></div>
                         </div>
-                        <p class="mb-0 text-white small-font">Pend recipes<span class="float-right">@Convert.ToInt32(rpp)% <i class="zmdi zmdi-long-arrow-up"></i></span></p>
+                        <p class="mb-0 text-white small-font">Pending recipes<span class="float-right">@Convert.ToInt32(rpp)% <i class="zmdi zmdi-long-arrow-up"></i></span></p>
                     </div>
                 </div>
                 <div class="col-12 col-lg-6 col-xl-4 border-light">
